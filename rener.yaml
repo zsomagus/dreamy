@@ -1,0 +1,8 @@
+services:
+  - type: web
+    name: sonic-jyotish
+    env: python
+    buildCommand: pip install -r requirements.txt
+    startCommand: streamlit run streamlit_app.py
+    repo: https://github.com/zsomagus/SonicJyotish-Streamlit
+    branch: main

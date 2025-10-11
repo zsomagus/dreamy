@@ -1,0 +1,122 @@
+[
+  {
+    "tithi": 1,
+    "name": "Kameshvari",
+    "description": "Kameshvari a vágy és teremtés istennője. Segít tisztázni a szándékokat, és támogatja az alkotó energiák áramlását.",
+    "keywords": ["vágy", "teremtés", "szándék", "alkotás"],
+    "mantra": "Om Aim Hreem Shreem Kameshvariyai Namaha",
+    "image": "1 kameshvari.jpg"
+  },
+  {
+    "tithi": 2,
+    "name": "Bagalamukhi",
+    "description": "Bagalamukhi az ellenerők megállítója. Védelmet nyújt a negatív energiák ellen, és segít a belső csend elérésében.",
+    "keywords": ["védelem", "csend", "kontroll", "negativitás"],
+    "mantra": "Om Hleem Bagalamukhi Sarva Dushtanam Vacham Mukham Padam Stambhaya Jivhaam Keelaya Buddhim Vinashaya Hleem Om Swaha",
+    "image": "2 bagalamukhi.jpg"
+  },
+  {
+    "tithi": 3,
+    "name": "Matangi",
+    "description": "Matangi a belső bölcsesség és kreatív kifejezés istennője. Segít az intuíció és az önkifejezés fejlesztésében.",
+    "keywords": ["intuíció", "önkifejezés", "bölcsesség", "kreativitás"],
+    "mantra": "Om Hreem Kleem Hoom Matangyai Namaha",
+    "image": "3 matangi.jpg"
+  },
+  {
+    "tithi": 4,
+    "name": "Bherunnda",
+    "description": "Bherunnda a transzformáció és belső erő istennője. Segít szembenézni a mély belső átalakulásokkal.",
+    "keywords": ["transzformáció", "belső erő", "átalakulás", "bátorság"],
+    "mantra": "Om Bherunndayai Namaha",
+    "image": "4 bherunnda.jpg"
+  },
+  {
+    "tithi": 5,
+    "name": "Vahnivasini",
+    "description": "Vahnivasini a tűz istennője, aki megtisztít és aktiválja az akaraterőt. Segít elengedni a régi mintákat.",
+    "keywords": ["tűz", "tisztulás", "akaraterő", "elengedés"],
+    "mantra": "Om Vahnivasinyai Namaha",
+    "image": "5 vahnivasini.jpg"
+  },
+  {
+    "tithi": 6,
+    "name": "Mahavarjeswari",
+    "description": "Mahavarjeswari a védelem és spirituális határok őrzője. Segít megőrizni a belső integritást.",
+    "keywords": ["védelem", "határok", "integritás", "spiritualitás"],
+    "mantra": "Om Mahavarjeswaryai Namaha",
+    "image": "6 mahavarjeswari.jpg"
+  },
+  {
+    "tithi": 7,
+    "name": "Sivaduti",
+    "description": "Sivaduti a Shiva energiáját közvetítő istennő. Segít a belső csend és tiszta tudatosság elérésében.",
+    "keywords": ["Shiva", "tudatosság", "csend", "transzcendencia"],
+    "mantra": "Om Sivadutyai Namaha",
+    "image": "7 sivaduti.jpg"
+  },
+  {
+    "tithi": 8,
+    "name": "Tvarita",
+    "description": "Tvarita a gyorsaság és megvilágosodás istennője. Segít felgyorsítani a spirituális fejlődést.",
+    "keywords": ["gyorsaság", "megvilágosodás", "haladás", "intuíció"],
+    "mantra": "Om Tvarityai Namaha",
+    "image": "8 tvarita.jpg"
+  },
+  {
+    "tithi": 9,
+    "name": "Kulasundari",
+    "description": "Kulasundari a belső szépség és bölcsesség istennője. Segít felismerni az igaz értékeket.",
+    "keywords": ["szépség", "bölcsesség", "értékek", "önismeret"],
+    "mantra": "Om Kulasundaryai Namaha",
+    "image": "9 kulasundari.jpg"
+  },
+  {
+    "tithi": 10,
+    "name": "Nitya Nitya",
+    "description": "Nitya Nitya az örökkévalóság és ciklikusság istennője. Segít megérteni az idő és változás természetét.",
+    "keywords": ["örökkévalóság", "idő", "ciklus", "változás"],
+    "mantra": "Om Nityayai Namaha",
+    "image": "10 nitya nitya.jpg"
+  },
+  {
+    "tithi": 11,
+    "name": "Nilapataka",
+    "description": "Nilapataka a sötétség és rejtett tudás istennője. Segít feltárni a tudattalan mélységeit.",
+    "keywords": ["rejtett tudás", "sötétség", "intuíció", "álom"],
+    "mantra": "Om Nilapatakayai Namaha",
+    "image": "11 nilapataka.jpg"
+  },
+  {
+    "tithi": 12,
+    "name": "Vijaya",
+    "description": "Vijaya a győzelem és siker istennője. Segít leküzdeni az akadályokat és megvalósítani célokat.",
+    "keywords": ["győzelem", "siker", "akadályok", "megvalósítás"],
+    "mantra": "Om Vijayayai Namaha",
+    "image": "12 vijaya.jpg"
+  },
+  {
+    "tithi": 13,
+    "name": "Sarvamangala",
+    "description": "Sarvamangala a teljes jóllét és áldás istennője. Segít harmóniát és boldogságot teremteni.",
+    "keywords": ["áldás", "harmónia", "jóllét", "boldogság"],
+    "mantra": "Om Sarvamangalayai Namaha",
+    "image": "13 sarvamangala.jpg"
+  },
+  {
+    "tithi": 14,
+    "name": "Jvalamalini",
+    "description": "Jvalamalini a lángoló tisztaság istennője. Segít elégetni a karmát és megtisztítani az utat.",
+    "keywords": ["tisztaság", "karma", "láng", "megtisztulás"],
+    "mantra": "Om Jvalamalinyai Namaha",
+    "image": "14 jvalamalini.jpg"
+  },
+  {
+    "tithi": 15,
+    "name": "Chitra",
+    "description": "Chitra a vizualizáció és kreatív látomás istennője. Segít megjeleníteni a belső világot.",
+    "keywords": ["vizualizáció", "látomás", "kreativitás", "belső világ"],
+    "mantra": "Om Chitrayai Namaha",
+    "image": "15 chitra.jpg"
+  }
+]
