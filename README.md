@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 Álomnapló
 
 Azért jöt létre, mert zavar, hogyy nem emlékszem az álmaimra.
@@ -27,3 +28,8 @@ which helps in meditation, helps to realize the meaning of the dream.
 The prashna horoscope - which can answer questions - can be evaluated with the press of a button.
 
 We can compare it with our birth formula.
+=======
+# dreamy
+Álomnapló  Hindu-Védikus Asztrológiával ötvözve
+>>>>>>> e2add73588701ea4bb7d734f0a89efe2424d99e2
+"# dreamy" 
