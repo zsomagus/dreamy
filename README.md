@@ -1,13 +1,14 @@
 <<<<<<< HEAD
 Álomnapló
 
-Azért jöt létre, mert zavar, hogyy nem emlékszem az álmaimra.
+Azért jöt létre, mert zavar, hogy nem emlékszem az álmaimra.
 
 Álomnapló Hindu-Vedikus asztrológiával ötvözve.
 Leírhatjuk álmainkat.
 
-Megadjuk azz álom dátumát, idejét, létrejönn egy  prashna kérdező horoszkóp, a középső  üres részben az álom létrejötének yantrája,
-mely segít a medditálásban, segít rájönni az álom jelentésére.
+Megadjuk az álom dátumát, idejét, létrejön egy  prashna kérdező horoszkóp, 
+a középső  üres részben az álom létrejötének yantrája,
+mely segít a meditálásban, segít rájönni az álom jelentésére.
 
 A prashna horoszkópot -ami kérdésekrre adhat választ-  egy gombnyomással kiértékelhetjük.
 
