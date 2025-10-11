@@ -1,0 +1,10 @@
+streamlit
+gunicorn
+swisseph
+matplotlib
+numpy
+Pillow
+markdown
+reportlab
+pendulum
+
