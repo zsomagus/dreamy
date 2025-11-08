@@ -1,0 +1,22 @@
+{
+  "name": "SonicJyotish",
+  "short_name": "S.J.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#97d580",
+  "theme_color": "#97d580",
+  
+  "icons": [
+  {
+    "src": "/static/sjicon-192.png",
+    "sizes": "192x192",
+    "type": "image/png"
+  },
+  {
+    "src": "/static/sjicon-512.png",
+    "sizes": "512x512",
+    "type": "image/png"
+  }
+]
+
+}

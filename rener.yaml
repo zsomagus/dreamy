@@ -1,8 +1,0 @@
-services:
-  - type: web
-    name: Dreamy
-    env: python
-    buildCommand: pip install -r requirements.txt
-    startCommand: streamlit run streamlit_app.py
-    repo: https://github.com/zsomagus/dreamy
-    branch: main

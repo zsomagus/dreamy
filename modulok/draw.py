@@ -5,9 +5,10 @@ from modulok import tables
 import swisseph as swe
 import matplotlib.pyplot as plt
 from PIL import Image  # noqa: F401
-from tkinter import messagebox  # noqa: F401
 from modulok.tables import house_positions, varga_factors
 from modulok.astro_core import calculate_ascendant, calculate_varga_positions, find_yantra_by_tithi, calculate_nakshatra
+
+
 def rajzol_del_indiai_horoszkop(
     planet_data,
     tithi,

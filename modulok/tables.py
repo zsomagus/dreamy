@@ -1,6 +1,69 @@
 import swisseph as swe
 
+# 💲 Globális tábla (uralkodó → nakshatra → 4 frekvencia)
+full_pada_table = {
+    "Mars": {
+        "Mrigashira": [132, 264, 396, 528],
+        "Chittra": [132, 264, 396, 528],
+        "Dhanista": [132, 264, 396, 528],
+    },
+    "Venus": {
+        "Bharani": [159.75, 319.5, 479.25, 639],
+        "Purva Phalguni": [159.75, 319.5, 479.25, 639],
+        "Purva Shada": [159.75, 319.5, 479.25, 639],
+    },
+    "Mercury": {
+        "Ashlesha": [185.25, 370.5, 555.75, 741],
+        "Jyeshta": [185.25, 370.5, 555.75, 741],
+        "Revati": [185.25, 370.5, 555.75, 741],
+    },
+    "Moon": {
+        "Rohini": [104.25, 208.5, 312.75, 417],
+        "Hasta": [104.25, 208.5, 312.75, 417],
+        "Shravana": [104.25, 208.5, 312.75, 417],
+    },
+    "Sun": {
+        "Krittika": [240.75, 481.5, 722.25, 963],
+        "Uttara Phalguni": [240.75, 481.5, 722.25, 963],
+        "Uttara Shada": [240.75, 481.5, 722.25, 963],
+    },
+    "Jupiter": {
+        "Punarvasu": [213, 426, 639, 852],
+        "Vishaka": [213, 426, 639, 852],
+        "Purva Bhadrapada": [213, 426, 639, 852],
+    },
+    "Saturn": {
+        "Pushya": [92.25, 184.5, 276.75, 369],
+        "Anuradha": [92.25, 184.5, 276.75, 369],
+        "Uttara Bhadrapada": [92.25, 184.5, 276.75, 369],
+    },
+    "Rahu": {
+        "Ardra": [71.25, 142.5, 213.75, 285],
+        "Swati": [71.25, 142.5, 213.75, 285],
+        "Shatabhisha": [71.25, 142.5, 213.75, 285],
+    },
+    "Ketu": {
+        "Ashwini": [43.5, 87, 130.5, 174],
+        "Magha": [43.5, 87, 130.5, 174],
+        "Mula": [43.5, 87, 130.5, 174],
+    },
+}
 
+# Jegy -> (Uralkodó bolygó, Frekvencia)
+jegy_uralkodok = {
+    1: ("Mars", 528),
+    2: ("Venus", 639),
+    3: ("Mercury", 741),
+    4: ("Moon", 417),
+    5: ("Sun", 963),
+    6: ("Mercury", 690),
+    7: ("Venus", 583.5),
+    8: ("Mars", 472.5),
+    9: ("Jupiter", 852),
+    10: ("Saturn", 369),
+    11: ("Saturn", 907.5),
+    12: ("Jupiter", 796.5),
+}
 varga_factors = {
     "D1 (Rashi)": 1,
     "D2 (Hora)": 15,
@@ -22,6 +85,21 @@ varga_factors = {
     "D40 (Khavedamsa)": 0.75,
     "D45 (Akshavedamsa)": 0.6,
     "D60 (Shashtyamsa)": 0.5,
+}
+# 📌 Jegy -> (Uralkodó bolygó, Frekvencia, Mantra)
+mantra_map = {
+    1: ("Mars", 528, "ram"),
+    2: ("Venus", 639, "yam"),
+    3: ("Mercury", 741, "ham"),
+    4: ("Moon", 417, "vam"),
+    5: ("Sun", 963, "ram"),
+    6: ("Mercury", 690, "ham"),
+    7: ("Venus", 583.5, "yam"),
+    8: ("Mars", 472.5, "ram"),
+    9: ("Jupiter", 852, "om"),
+    10: ("Saturn", 369, "lam"),
+    11: ("Saturn", 907.5, "aum"),
+    12: ("Jupiter", 796.5, "om"),
 }
 nakshatras = [
     "Ashwini",
@@ -105,6 +183,36 @@ house_positions = {
     11: (0, 2),  # Vízöntő
     12: (0, 3),  # Halak
 }
+nakshatra_hangnemek = {
+    "Ashwini": "C-dúr",
+    "Bharani": "D-moll",
+    "Krittika": "E-dúr",
+    "Rohini": "A-dúr",
+    "Mrigashira": "G-dúr",
+    "Ardra": "F-moll",
+    "Punarvasu": "G-moll",
+    "Pushya": "B-dúr",
+    "Ashlesha": "D♯-moll",
+    "Magha": "C♯-dúr",
+    "Purva Phalguni": "A♭-dúr",
+    "Uttara Phalguni": "B♭-dúr",
+    "Hasta": "F-dúr",
+    "Chitra": "E♭-dúr",
+    "Swati": "D-dúr",
+    "Vishaka": "G♯-moll",
+    "Anuradha": "A-moll",
+    "Jyeshta": "C-moll",
+    "Mula": "F♯-moll",
+    "Purva Shada": "E-moll",
+    "Uttara Shada": "G♭-dúr",
+    "Shravana": "A♯-dúr",
+    "Dhanishta": "B♭-moll",
+    "Shatabishak": "C♯-moll",
+    "Purva Bhadrapada": "F♯-dúr",
+    "Uttara Bhadrapada": "G-moll",
+    "Revati": "D-dúr",
+}
+
 purushartha_map = {
     1: {
         1: ("Dharma", "Becsületes élet"),
