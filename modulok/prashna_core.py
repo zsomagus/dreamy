@@ -1,15 +1,7 @@
 import pendulum
 import swisseph as swe
 from modulok.astro_core import get_planet_data
-import streamlit as st
 from modulok.config import fill_coordinate_entries
-st.subheader("📍 Prashna helyszín megadása")
-
-with st.form("prashna_location_form"):
-    prashna_city = st.text_input("Kérdés helyszíne (város)", value="Budapest")
-    prashna_lat = st.text_input("Szélességi fok", value="")
-    prashna_lon = st.text_input("Hosszúsági fok", value="")
-    prashna_submit = st.form_submit_button("🔍 Mentés")
 
 def fill_prashna_data_streamlit():
     now = pendulum.now("Europe/Budapest")

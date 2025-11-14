@@ -1,0 +1,32 @@
+(dreamy_env) C:\Users\MZs\Documents\A pykódok\sj>python import_check.py
+🔍 Import‑ellenőrzés indul...
+
+📂 Könyvtár: gui
+✅ Sikeres import: gui.dasa_widget
+✅ Sikeres import: gui.dreamy_widget
+✅ Sikeres import: gui.maingui
+✅ Sikeres import: gui.prashna_widget
+✅ Sikeres import: gui.rashi_widget
+✅ Sikeres import: gui.varshaphala_widget
+✅ Sikeres import: gui.__init__
+
+📂 Könyvtár: modulok
+✅ Sikeres import: modulok.astro_core
+✅ Sikeres import: modulok.audio_kotta_tools
+✅ Sikeres import: modulok.config
+✅ Sikeres import: modulok.dasa_mandala
+✅ Sikeres import: modulok.dasa_tools
+✅ Sikeres import: modulok.data_handler
+✅ Sikeres import: modulok.draw
+✅ Sikeres import: modulok.elemzes
+✅ Sikeres import: modulok.harmonizacio
+✅ Sikeres import: modulok.prashna_core
+✅ Sikeres import: modulok.tables
+✅ Sikeres import: modulok.varshaphala_tools
+✅ Sikeres import: modulok.__init__
+(dreamy_env) C:\Users\MZs\Documents\A pykódok\sj>python ellenőrzés.py
+
+🔍 Modulellenőrzés indul: C:\Users\MZs\Documents\A pykódok\sj
+
+✅ Sikeres import: ellenőrzés
+✅ Sikeres import: import_check

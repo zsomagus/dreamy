@@ -1,0 +1,332 @@
+[
+    {
+        "vezetek_nev": "Mucsi",
+        "kereszt_nev": "Zsombor",
+        "datum": "1976-3-15",
+        "ido": "21:53",
+        "latitude": "46.48",
+        "longitude": "19.03",
+        "ido_zona": "Europe/budapest",
+        "nyari_idoszamitas": "nem"
+    },
+    {
+        "vezetek_nev": "Aurobindo",
+        "kereszt_nev": "Ghose",
+        "datum": "1872-8-15",
+        "ido": "00:00:00",
+        "latitude": "22.34",
+        "longitude": "88.22",
+        "ido_zona": "Asia/Kolkata",
+        "nyari_idoszamitas": "nem"
+    },
+    {
+        "vezetek_nev": "Maharishi",
+        "kereszt_nev": "Mahesh Yogi",
+        "datum": "1917-1-12",
+        "ido": "00:00:00",
+        "latitude": "21.15",
+        "longitude": "79.09",
+        "ido_zona": "Asia/Kolkata",
+        "nyari_idoszamitas": "nem"
+    },
+    {
+        "vezetek_nev": "Mahatma",
+        "kereszt_nev": "Gandhi",
+        "datum": "1869-10-2",
+        "ido": "00:00:00",
+        "latitude": "21.38",
+        "longitude": "69.36",
+        "ido_zona": "Asia/Kolkata",
+        "nyari_idoszamitas": "nem"
+    },
+    {
+        "vezetek_nev": "Pandit",
+        "kereszt_nev": "Sanjay Rath",
+        "datum": "1963-8-7",
+        "ido": "00:00:00",
+        "latitude": "21.46",
+        "longitude": "83.98",
+        "ido_zona": "Asia/Kolkata",
+        "nyari_idoszamitas": "nem"
+    },
+    {
+        "vezetek_nev": "India",
+        "kereszt_nev": "India",
+        "datum": "1947-8-15",
+        "ido": "00:00:00",
+        "latitude": "28.37",
+        "longitude": "77.13",
+        "ido_zona": "Asia/Kolkata",
+        "nyari_idoszamitas": "nem"
+    },
+    {
+        "vezetek_nev": "Prof. B. Suryanarai n",
+        "kereszt_nev": "Rao",
+        "datum": "1856-2-12",
+        "ido": "00:00:00",
+        "latitude": "18.30",
+        "longitude": "83.90",
+        "ido_zona": "Asia/Kolkata",
+        "nyari_idoszamitas": "nem"
+    },
+    {
+        "vezetek_nev": "Prof. B. V.",
+        "kereszt_nev": "Raman",
+        "datum": "1912-8-8",
+        "ido": "00:00:00",
+        "latitude": "12.58",
+        "longitude": "77.35",
+        "ido_zona": "Asia/Kolkata",
+        "nyari_idoszamitas": "nem"
+    },
+    {
+        "vezetek_nev": "Ramakrishna",
+        "kereszt_nev": "Paramahansa",
+        "datum": "1836-2-18",
+        "ido": "00:00:00",
+        "latitude": "22.91",
+        "longitude": "87.65",
+        "ido_zona": "Asia/Kolkata",
+        "nyari_idoszamitas": "nem"
+    },
+    {
+        "vezetek_nev": "Ramana",
+        "kereszt_nev": "Maharishi",
+        "datum": "1879-12-30",
+        "ido": "00:00:00",
+        "latitude": "-78.15",
+        "longitude": "5.30",
+        "ido_zona": "Asia/Kolkatas",
+        "nyari_idoszamitas": "nem"
+    },
+    {
+        "vezetek_nev": "Sarada",
+        "kereszt_nev": "Mata",
+        "datum": "1853-12-22",
+        "ido": "00:00:00",
+        "latitude": "23.1333",
+        "longitude": "87.5167",
+        "ido_zona": "Asia/Kolkata",
+        "nyari_idoszamitas": "nem"
+    },
+    {
+        "vezetek_nev": "Sri P. V. S.",
+        "kereszt_nev": "Chalapathi Rao (astrologer)",
+        "datum": "1933-7-15",
+        "ido": "00:00:00",
+        "latitude": "-80.56",
+        "longitude": "5.30",
+        "ido_zona": "Asia/Kolkata",
+        "nyari_idoszamitas": "nem"
+    },
+    {
+        "vezetek_nev": "Sri Satya",
+        "kereszt_nev": "Sai Baba (Puttaparthy)",
+        "datum": "1926-11-23",
+        "ido": "00:00:00",
+        "latitude": "14.1667",
+        "longitude": "77.8000",
+        "ido_zona": "Asia/Kolkata",
+        "nyari_idoszamitas": "nem"
+    },
+    {
+        "vezetek_nev": "Swami Chandrasekhara",
+        "kereszt_nev": "Saraswati",
+        "datum": "1894-5-20",
+        "ido": "00:00:00",
+        "latitude": "12.835",
+        "longitude": "79.705",
+        "ido_zona": "Asia/Kolkata",
+        "nyari_idoszamitas": "nem"
+    },
+    {
+        "vezetek_nev": "Swami",
+        "kereszt_nev": "Jayendra Saraswati",
+        "datum": "1935-7-18",
+        "ido": "00:00:00",
+        "latitude": "12.835",
+        "longitude": "79.705",
+        "ido_zona": "Asia/Kolkata",
+        "nyari_idoszamitas": "nem"
+    },
+    {
+        "vezetek_nev": "Swami",
+        "kereszt_nev": "Narasimha Bharthi",
+        "datum": "1858-3-11",
+        "ido": "00:00:00",
+        "latitude": "-78.00",
+        "longitude": "5.12",
+        "ido_zona": "Pacific/Tongatapu",
+        "nyari_idoszamitas": "nem"
+    },
+    {
+        "vezetek_nev": "Swami",
+        "kereszt_nev": "Sivananda",
+        "datum": "1887-9-8",
+        "ido": "00:00:00",
+        "latitude": "-77.40",
+        "longitude": "5.11",
+        "ido_zona": "Asia/Kuala_Lumpur",
+        "nyari_idoszamitas": "nem"
+    },
+    {
+        "vezetek_nev": "Swami",
+        "kereszt_nev": "Vivekananda",
+        "datum": "1863-1-12",
+        "ido": "00:00:00",
+        "latitude": "-88.30",
+        "longitude": "5.54",
+        "ido_zona": "Asia/Kolkata",
+        "nyari_idoszamitas": "nem"
+    },
+    {
+        "vezetek_nev": "Bérczi",
+        "kereszt_nev": "Anna",
+        "datum": "1986-6-20",
+        "ido": "8:10",
+        "latitude": "46.48",
+        "longitude": "19.03",
+        "ido_zona": "Europe/budapest",
+        "nyari_idoszamitas": "nem"
+    },
+    {
+        "vezetek_nev": "Pedersoli",
+        "kereszt_nev": "Carlo",
+        "datum": "1929-10-31",
+        "ido": "00:00:00",
+        "latitude": "40.85",
+        "longitude": "14.27",
+        "ido_zona": "Europe/Rome",
+        "nyari_idoszamitas": "igen"
+    },
+    {
+        "vezetek_nev": "Bulsara",
+        "kereszt_nev": "Farouk",
+        "datum": "1946-09-05",
+        "ido": "00:00:00",
+        "latitude": "-6.16",
+        "longitude": "39.20",
+        "ido_zona": "Afrika/Dar_es_Salaam",
+        "nyari_idoszamitas": "nem"
+    },
+    {
+        "vezetek_nev": "Germanotta",
+        "kereszt_nev": "Stefani Joanne Angelina",
+        "datum": "1986-03-28",
+        "ido": "00:00:00",
+        "latitude": "40.71",
+        "longitude": "-74.01",
+        "ido_zona": "Amerika/New_York",
+        "nyari_idoszamitas": "igen"
+    },
+    {
+        "vezetek_nev": "Guevara",
+        "kereszt_nev": "Ernesto",
+        "datum": "1928-06-14",
+        "ido": "00:00:00",
+        "latitude": "-32.95",
+        "longitude": "-60.65",
+        "ido_zona": "Amerika/Argentina",
+        "nyari_idoszamitas": "nem"
+    },
+    {
+        "vezetek_nev": "Hershlag",
+        "kereszt_nev": "Neta-Lee",
+        "datum": "1981-06-09",
+        "ido": "00:00:00",
+        "latitude": "31.77",
+        "longitude": "35.21",
+        "ido_zona": "Asia/Jerusalem",
+        "nyari_idoszamitas": "igen"
+    },
+    {
+        "vezetek_nev": "Tim",
+        "kereszt_nev": "Bergling",
+        "datum": "1989-09-08",
+        "ido": "01:00:00",
+        "latitude": "59.19",
+        "longitude": "18.05",
+        "ido_zona": "Europa/Stockholm",
+        "nyari_idoszamitas": "igen"
+    },
+    {
+        "vezetek_nev": "Einstein",
+        "kereszt_nev": "Albert",
+        "datum": "1879-03-14",
+        "ido": "00:00:00",
+        "latitude": "48.40",
+        "longitude": "9.99",
+        "ido_zona": "Europa/Berlin",
+        "nyari_idoszamitas": "igen"
+    },
+    {
+        "vezetek_nev": "Curie",
+        "kereszt_nev": "Marie",
+        "datum": "1867-11-07",
+        "ido": "00:00:00",
+        "latitude": "52.23",
+        "longitude": "21.01",
+        "ido_zona": "Europa/Warsaw",
+        "nyari_idoszamitas": "igen"
+    },
+    {
+        "vezetek_nev": "da Vinci",
+        "kereszt_nev": "Leonardo",
+        "datum": "1452-04-15",
+        "ido": "00:00:00",
+        "latitude": "43.78",
+        "longitude": "10.86",
+        "ido_zona": "Európa/Roma",
+        "nyari_idoszamitas": "igen"
+    },
+    {
+        "vezetek_nev": "Kahlo",
+        "kereszt_nev": "Frida",
+        "datum": "1907-07-06",
+        "ido": "00:00:00",
+        "latitude": "19.35",
+        "longitude": "-99.16",
+        "ido_zona": "Amerika/Mexikocity",
+        "nyari_idoszamitas": "igen"
+    },
+    {
+        "vezetek_nev": "Turner",
+        "kereszt_nev": "Tina",
+        "datum": "1939-11-26",
+        "ido": "00:00:00",
+        "latitude": "35.85",
+        "longitude": "-89.40",
+        "ido_zona": "Amerika/Chicago",
+        "nyari_idoszamitas": "igen"
+    },
+    {
+        "vezetek_nev": "Gandhi",
+        "kereszt_nev": "Mahatma",
+        "datum": "1869-10-02",
+        "ido": "00:00:00",
+        "latitude": "21.64",
+        "longitude": "69.60",
+        "ido_zona": "Asia/Kolkata",
+        "nyari_idoszamitas": "nem"
+    },
+    {
+        "vezetek_nev": "Zanta",
+        "kereszt_nev": "Zoltán",
+        "datum": "1966-01-07",
+        "ido": "00:00:00",
+        "latitude": "47.50",
+        "longitude": "19.04",
+        "ido_zona": "Europe/budapest",
+        "nyari_idoszamitas": "igen"
+    },
+    {
+        "vezetek_nev": "anyád",
+        "kereszt_nev": "anyád",
+        "datum": "1947-10-16",
+        "ido": "15:00:00",
+        "latitude": "47.30",
+        "longitude": "19.05",
+        "ido_zona": "Europe/Budapest",
+        "nyari_idoszamitas": "nem"
+    }
+]
