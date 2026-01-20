@@ -40,31 +40,6 @@ def find_yantra_by_tithi(tithi, yantra_folder=YANTRA_PATH):
             return os.path.join(yantra_folder, fname)
     return None
 
-# 🧮 Varga pozíciók számítása
-def calculate_varga_positions(planet_data, varga_szorzo):
-    varga_positions = {}
-    for planet, data in planet_data.items():
-        longitude = data["longitude"] % 360.0
-        varga_longitude = (longitude * varga_szorzo) % 360.0
-        varga_positions[planet] = {"longitude": varga_longitude}
-    return varga_positions
-def calculate_all_varga_positions(planet_data: dict, varga_factors: dict) -> dict:
-    """
-    Feldolgozza az összes részhoroszkópot a varga_factor szótár alapján.
-    Visszaad egy szótárat: { "D1": { "Moon": {...}, ... }, "D9": {...}, ... }
-    """
-    all_varga_positions = {}
-
-    for varga_name, szorzo in varga_factors.items():
-        varga_positions = {}
-        for planet, data in planet_data.items():
-            longitude = data.get("longitude", 0.0) % 360.0
-            varga_longitude = (longitude * szorzo) % 360.0
-            varga_positions[planet] = {"longitude": varga_longitude}
-        all_varga_positions[varga_name] = varga_positions
-
-    return all_varga_positions
-
 SIGNS = [
     "Aries", "Taurus", "Gemini", "Cancer", "Leo", "Virgo",
     "Libra", "Scorpio", "Sagittarius", "Capricorn", "Aquarius", "Pisces"

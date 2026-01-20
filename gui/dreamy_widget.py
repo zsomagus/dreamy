@@ -28,8 +28,8 @@ class DreammyWidget(QWidget):
 
         # Táblázat
         self.table = QTableWidget()
-        self.table.setColumnCount(3)
-        self.table.setHorizontalHeaderLabels(["Dátum","Álom","Hangulat"])
+        self.table.setColumnCount(4)
+        self.table.setHorizontalHeaderLabels(["Dátum","Álom","Hangulat", "Szimbolumok"])
         self.table.horizontalHeader().setSectionResizeMode(QHeaderView.Stretch)
 
         layout.addWidget(QLabel("📝 Új álom"))
@@ -55,7 +55,7 @@ class DreammyWidget(QWidget):
         text = self.dreamText.toPlainText().strip()
         if not text:
             return
-        mood = self.moodSelector.currentText()p
+        mood = self.moodSelector.currentText()
         now = pendulum.now("Europe/Budapest")
         datum_str = now.format("YYYY-MM-DD HH:mm")
 
@@ -111,7 +111,7 @@ class DreammyWidget(QWidget):
             # kompatibilis régi és új kulcsnévvel
             szimb = dream.get("Szimbolumok") or dream.get("Kulcsszo") or ""
             self.table.setItem(i, 3, QTableWidgetItem(szimb))
-    def levag_ragokat(szo: str):
+    def levag_ragokat(self, szo: str):
         """Levágja a leggyakoribb magyar ragokat a szó végéről."""
         ragok = [
             "ban","ben","val","vel","hoz","hez","höz",
