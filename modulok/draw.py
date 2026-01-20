@@ -1,12 +1,12 @@
 import os  # noqa: F401
 import pendulum
-from modulok.config import convert_to_utc
+from modulok  import  config
 from modulok import tables
 import swisseph as swe
 import matplotlib.pyplot as plt
 from PIL import Image  # noqa: F401
-from modulok.tables import house_positions, varga_factors
-from modulok.astro_core import calculate_ascendant, calculate_varga_positions, find_yantra_by_tithi, calculate_nakshatra
+from modulok.tables import house_positions
+from modulok.astro_core import calculate_ascendant, find_yantra_by_tithi, calculate_nakshatra
 import os
 
 
@@ -88,28 +88,7 @@ def rajzol_del_indiai_horoszkop(
         fontweight="bold",
     )
 
-    # Mentés fájlba
-
-    downloads = os.path.join(os.path.expanduser("~"), "Downloads", "SonicJyotish")
-    os.makedirs(downloads, exist_ok=True)  # ha nincs, létrehozza
-
-    if is_prashna and date_str and time_str:
-        datum = date_str.strip()
-        ido = time_str.strip().replace(":", "-")
-        filename = os.path.join(downloads, f"prashna_{datum}_{ido}_{horoszkop_nev}.png")
-    elif vezeteknev and keresztnev:
-        filename = os.path.join(
-            downloads,
-            f"{vezeteknev.lower()}_{keresztnev.lower()}_horoszkop_{horoszkop_nev}.png",
-        )
-    else:
-        filename = os.path.join(downloads, f"horoszkop_{horoszkop_nev}.png")
-
-    plt.savefig(filename, dpi=300, facecolor=fig.get_facecolor())
-    plt.close()
-    print(f"Mentve: {filename}")
-
-
+    
 
 def draw_chart_for_current_input(
     date_str,
