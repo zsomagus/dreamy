@@ -1,0 +1,545 @@
+{
+  "alomszotar": [
+    {
+      "kulcsszo": "ablak",
+      "jelentesek": [
+        "Csukott ablak: kíváncsiság, olyasmit szeretnél megtudni, amihez nincs közöd.",
+        "Nyitott ablak: félsz, hogy titkod kiderül.",
+        "Nyitott ablakon jó érzéssel kinézni: kiegyensúlyozott, szeretetteljes kapcsolat.",
+        "Ablakot mosni: valamit elfelejtettél vagy elvesztettél, de nem mertél szólni érte."
+      ]
+    },
+    {
+      "kulcsszo": "víz",
+      "jelentesek": [
+        "Tiszta víz: lelki tisztaság, nyugalom.",
+        "Zavaros víz: bizonytalanság, érzelmi zűrzavar.",
+        "Áradás: túlterheltség, érzelmi nyomás.",
+        "Hullámzó víz: változó érzelmek, bizonytalanság."
+      ]
+    },
+    {
+      "kulcsszo": "kutya",
+      "jelentesek": [
+        "Barátságos kutya: hűség, bizalom.",
+        "Ugató kutya: figyelmeztetés, veszély közeledik.",
+        "Támadó kutya: konfliktus, árulás.",
+        "Elveszett kutya: magány, bizalomvesztés."
+      ]
+    },
+    {
+      "kulcsszo": "repülés",
+      "jelentesek": [
+        "Szabadon repülni: szabadságvágy, siker.",
+        "Zuhanó repülés: félelem a kudarctól.",
+        "Másokat repülni látni: inspiráció, példakép.",
+        "Repülőgépben ülni: új lehetőségek, utazás."
+      ]
+    },
+    {
+      "kulcsszo": "pénz",
+      "jelentesek": [
+        "Pénzt találni: váratlan szerencse.",
+        "Pénzt elveszíteni: veszteség, csalódás.",
+        "Pénzt adni: nagylelkűség, segítségnyújtás.",
+        "Pénzt kapni: elismerés, jutalom."
+      ]
+    },
+    {
+      "kulcsszo": "tűz",
+      "jelentesek": [
+        "Kis tűz: szenvedély, lelkesedés.",
+        "Nagy tűz: veszély, pusztítás.",
+        "Tüzet oltani: problémamegoldás.",
+        "Tűz mellett ülni: biztonság, melegség."
+      ]
+    },
+    {
+      "kulcsszo": "hal",
+      "jelentesek": [
+        "Úszó hal: bőség, jólét.",
+        "Halászni: lehetőségek keresése.",
+        "Halat enni: egészség, erő.",
+        "Elpusztult hal: veszteség, csalódás."
+      ]
+    },
+    {
+      "kulcsszo": "hegy",
+      "jelentesek": [
+        "Hegyet mászni: kihívások leküzdése.",
+        "Hegy tetején állni: siker, cél elérése.",
+        "Hegyet látni: akadályok az úton.",
+        "Hegyről lemenni: pihenés, visszavonulás."
+      ]
+    },
+    {
+      "kulcsszo": "kulcs",
+      "jelentesek": [
+        "Kulcsot találni: új lehetőség.",
+        "Kulcsot elveszíteni: akadály, elzárkózás.",
+        "Kulcsot használni: megoldás megtalálása.",
+        "Több kulcs: több választási lehetőség."
+      ]
+    },
+    {
+      "kulcsszo": "virág",
+      "jelentesek": [
+        "Nyíló virág: új kezdet, öröm.",
+        "Hervadt virág: veszteség, szomorúság.",
+        "Virágot kapni: szeretet, megbecsülés.",
+        "Virágot adni: kedvesség, figyelmesség."
+      ]
+  },
+  {                                    
+    "kulcsszo": "kígyó",
+    "jelentesek": [
+      "Kígyó látványa: rejtett félelmek, ösztönök.",
+      "Kígyó támadása: árnyék-én konfliktus.",
+      "Kígyót simogatni: gyógyulás, ösztönök integrálása.",
+      "Kígyó levetett bőre: újjászületés, átalakulás."
+    ]
+  },
+  {
+    "kulcsszo": "ház",
+    "jelentesek": [
+      "Ismeretlen ház: tudattalan tartalmak feltárulása.",
+      "Összedőlt ház: régi identitás felbomlása.",
+      "Takarítani egy házban: lelki tisztulás.",
+      "Házba belépni: új életszakasz."
+    ]
+  },
+  {
+    "kulcsszo": "tükör",
+    "jelentesek": [
+      "Tükörbe nézni: önismeret, valódi én.",
+      "Törött tükör: identitásválság, tagadás.",
+      "Tükör nélküliség: önkép hiánya.",
+      "Tükör mögötti tér: tudattalan üzenete."
+    ]
+  },
+  {
+    "kulcsszo": "gyermek",
+    "jelentesek": [
+      "Gyermekkel találkozni: belső gyermek jelzése.",
+      "Sérült gyermek: elnyomott trauma.",
+      "Nevető gyermek: kreatív energia.",
+      "Eltűnt gyermek: elfojtott vágyak."
+    ]
+  },
+  {
+    "kulcsszo": "halál",
+    "jelentesek": [
+      "Saját halálod: teljes átalakulás.",
+      "Más halála: kapcsolat lezárása.",
+      "Halotthoz beszélni: üzenet a tudattalanból.",
+      "Halálfélelem: változás ellenállása."
+    ]
+  },
+  {
+    "kulcsszo": "újjászületés",
+    "jelentesek": [
+      "Új testben lenni: új identitás.",
+      "Születést látni: új kezdet.",
+      "Fényben való újjászületés: spirituális megvilágosodás.",
+      "Fájdalmas újjászületés: nehéz, de szükséges változás."
+    ]
+  },
+  {
+    "kulcsszo": "fény",
+    "jelentesek": [
+      "Erős fény: spirituális ébredés.",
+      "Távoli fény: cél, remény.",
+      "Villódzó fény: bizonytalan út.",
+      "Fényből érkező alak: magasabb tudatosság."
+    ]
+  },
+  {
+    "kulcsszo": "sötétség",
+    "jelentesek": [
+      "Teljes sötétség: belső árnyék megnyilvánulása.",
+      "Fényt keresni a sötétben: önismeret útja.",
+      "Sötétben ragadni: félelem a változástól.",
+      "Sötétségből előlépő alak: tudattalan üzenete."
+    ]
+  },
+  {
+    "kulcsszo": "erdő",
+    "jelentesek": [
+      "Sűrű erdő: lelki útkeresés.",
+      "Elveszni az erdőben: identitásválság.",
+      "Fényes erdő: belső béke.",
+      "Erdő mélyén lévő ház: belső mag."
+    ]
+  },
+  {
+    "kulcsszo": "út",
+    "jelentesek": [
+      "Egyenes út: egyértelmű életirány.",
+      "Kanyargó út: bizonytalanság.",
+      "Elágazás: döntési helyzet.",
+      "Út nélküli táj: új ösvény létrehozása."
+    ]
+  },
+  {
+    "kulcsszo": "híd",
+    "jelentesek": [
+      "Hídon átkelni: átmenet két életszakasz között.",
+      "Híd alatt állni: elkerült döntések.",
+      "Leszakadó híd: kapcsolatok megszakadása.",
+      "Új híd: lehetőség a gyógyulásra."
+    ]
+  },
+  {
+    "kulcsszo": "kapu",
+    "jelentesek": [
+      "Nyitott kapu: új kezdet.",
+      "Zárt kapu: ellenállás, félelem.",
+      "Őrzött kapu: belső határ.",
+      "Kapun átlépni: spirituális beavatás."
+    ]
+  },
+  {
+    "kulcsszo": "vízesés",
+    "jelentesek": [
+      "Vízesés látványa: érzelmek felszabadulása.",
+      "Vízesés alá állni: megtisztulás.",
+      "Zuhaogó víz: kontrollvesztés.",
+      "Kiszáradt vízesés: kiürült energiatartalékok."
+    ]
+  },
+  {
+    "kulcsszo": "madár",
+    "jelentesek": [
+      "Szabad madár: lélek szabadsága.",
+      "Sebzett madár: sérült remény.",
+      "Fekete madár: árnyéküzenet.",
+      "Madár repülésre hív: spirituális útmutatás."
+    ]
+  },
+  {
+    "kulcsszo": "macska",
+    "jelentesek": [
+      "Barátságos macska: intuitív energia.",
+      "Elbújó macska: elfojtott érzések.",
+      "Támadó macska: női árnyék-energia.",
+      "Fehér macska: tiszta női princípium."
+    ]
+  },
+  {
+    "kulcsszo": "alkonyat",
+    "jelentesek": [
+      "Alkonyat látványa: átmeneti időszak.",
+      "Hosszú alkony: döntés halogatása.",
+      "Alkonyból felbukkanó alak: tudattalan árnyékszemélyiség.",
+      "Naplemente: egy ciklus lezárása."
+    ]
+  },
+  {
+    "kulcsszo": "hold",
+    "jelentesek": [
+      "Telihold: érzelmek tetőpontja.",
+      "Újhold: új kezdet a mélyben.",
+      "Holdfogyatkozás: rejtett félelmek.",
+      "Két hold az égen: kettős identitás."
+    ]
+  },
+  {
+    "kulcsszo": "női alak",
+    "jelentesek": [
+      "Ismeretlen nő: anima (belső női princípium).",
+      "Idős nő: bölcsesség.",
+      "Sötét női alak: árnyék-anima.",
+      "Szerető nőalak: lelki gyógyulás."
+    ]
+  },
+  {
+    "kulcsszo": "férfi alak",
+    "jelentesek": [
+      "Ismeretlen férfi: animus (belső férfi princípium).",
+      "Haragos férfi: elnyomott agresszió.",
+      "Segítő férfi: erőforrás.",
+      "Árnyékférfi: elutasított részeid."
+    ]
+  },
+  {
+    "kulcsszo": "templom",
+    "jelentesek": [
+      "Templomba lépni: spirituális útkeresés.",
+      "Üres templom: hitvesztés.",
+      "Fényes templom: magas tudatszint.",
+      "Összedőlt templom: régi hitrendszer összeomlása."
+    ]
+  },
+  {
+    "kulcsszo": "tenger",
+    "jelentesek": [
+      "Nyugodt tenger: lelki béke.",
+      "Viharos tenger: érzelmi káosz.",
+      "Végtelen tenger: tudattalan mélysége.",
+      "Tengerbe merülni: belső utazás."
+    ]
+  },
+  {
+    "kulcsszo": "szörny",
+    "jelentesek": [
+      "Szörnytől menekülni: elfojtott trauma.",
+      "Szörnyet legyőzni: árnyék integráció.",
+      "Szörnnyé válni: identitásválság.",
+      "Barátságos szörny: elfogadás."
+    ]
+  },
+  {
+    "kulcsszo": "ajtó",
+    "jelentesek": [
+      "Csukott ajtó: bizonytalanság.",
+      "Nyitott ajtó: lehetőség.",
+      "Lakatlan ajtó: elnyomott igazság.",
+      "Ismeretlen ajtón belépni: mély önfelfedezés."
+    ]
+  },
+  {
+    "kulcsszo": "lépcső",
+    "jelentesek": [
+      "Lépcsőn felfelé: fejlődés.",
+      "Lépcsőn lefelé: belépés a tudattalanba.",
+      "Összedőlt lépcső: elakadás.",
+      "Végtelen lépcső: belső utazás."
+    ]
+  },
+  {
+    "kulcsszo": "tűkörlabirintus",
+    "jelentesek": [
+      "Labirintusban bolyongani: önkeresés.",
+      "Kijáratot találni: megoldás.",
+      "Tükrös labirintus: identitás-zavar.",
+      "Labirintus közepén: belső igazság."
+    ]
+  },
+  {
+    "kulcsszo": "szél",
+    "jelentesek": [
+      "Erős szél: külső hatások befolyása.",
+      "Lágy szél: friss energiák.",
+      "Forgószél: érzelmi káosz.",
+      "Szélcsend: stagnálás."
+    ]
+  },
+  {
+    "kulcsszo": "tű",
+    "jelentesek": [
+      "Megszúr a tű: lelki sérülés.",
+      "Tűt keresni: apró részletek kutatása.",
+      "Tűt találni: felismerés.",
+      "Tűvel varrni: gyógyulás, összekapcsolódás."
+    ]
+  },
+  {
+    "kulcsszo": "vonat",
+    "jelentesek": [
+      "Vonaton utazni: életút.",
+      "Lekésni a vonatot: elmulasztott lehetőség.",
+      "Ismeretlen vonat: új életirány.",
+      "Vonatbaleset: hirtelen változás."
+    ]
+  },
+  {
+    "kulcsszo": "szikla",
+    "jelentesek": [
+      "Sziklán állni: erő, stabilitás.",
+      "Szikláról leesni: bizonytalanság.",
+      "Sziklát mászni: kitartás.",
+      "Sziklahasadék: belső feszültség."
+    ]
+  },
+  {
+    "kulcsszo": "kapcsoló",
+    "jelentesek": [
+      "Kapcsolót felkapcsolni: tudatosság.",
+      "Leoltani: visszavonulás.",
+      "Kapcsoló nem működik: eszköztelenség.",
+      "Ismeretlen kapcsoló: új lehetőség."
+    ]
+  },
+  {
+    "kulcsszo": "sárkány",
+    "jelentesek": [
+      "Sárkány látványa: belső erő.",
+      "Sárkánytól félni: félelem a hatalomtól.",
+      "Megülni a sárkányt: uralod az ösztönöket.",
+      "Sárkánnyal beszélni: magasabb bölcsesség."
+    ]
+  },
+  {
+    "kulcsszo": "szem",
+    "jelentesek": [
+      "Nagy szem figyel: önreflexió.",
+      "Sötét szem: titok.",
+      "Több szem: fokozott érzékelés.",
+      "Vak szem: belső vakság."
+    ]
+  },
+  {
+    "kulcsszo": "fa",
+    "jelentesek": [
+      "Nagy fa: erős családi rendszer.",
+      "Kopár fa: energiavesztés.",
+      "Virágzó fa: fejlődés.",
+      "Fa gyökerei: múlt, alapok."
+    ]
+  },
+  {
+    "kulcsszo": "eső",
+    "jelentesek": [
+      "Zápor: érzelmi felszabadulás.",
+      "Viharos eső: elnyomott sírás.",
+      "Szitáló eső: finom lelki tisztulás.",
+      "Esőben sétálni: elfogadás."
+    ]
+  },
+  {
+    "kulcsszo": "teher",
+    "jelentesek": [
+      "Nehéz terhet cipelni: lelki súly.",
+      "Teher letevése: felszabadulás.",
+      "Más terhét vinni: túlzott felelősség.",
+      "Elveszíteni a terhet: kontroll elengedése."
+    ]
+  },
+  {
+    "kulcsszo": "torta",
+    "jelentesek": [
+      "Tortát enni: öröm, jutalom.",
+      "Torta szétmállik: kudarc.",
+      "Tortát sütni: szeretet kifejezése.",
+      "Torta eltűnik: hiányérzet."
+    ]
+  },
+  {
+    "kulcsszo": "árnyék",
+    "jelentesek": [
+      "Furcsa árnyék: elfojtott részek.",
+      "Árnyék követ: trauma.",
+      "Árnyékkal beszélni: integráció.",
+      "Eltűnő árnyék: gyógyulás."
+    ]
+  },
+  {
+    "kulcsszo": "lámpa",
+    "jelentesek": [
+      "Lámpát meggyújtani: tisztánlátás.",
+      "Kialudt lámpa: kétség.",
+      "Villogó lámpa: figyelmeztetés.",
+      "Fényes lámpa: remény."
+    ]
+  },
+  {
+    "kulcsszo": "kör",
+    "jelentesek": [
+      "Körben járni: ismétlődő minták.",
+      "Kör közepén állni: fókusz.",
+      "Kört rajzolni: védelem.",
+      "Körből kilépni: új irány."
+    ]
+  },
+  {
+    "kulcsszo": "maszk",
+    "jelentesek": [
+      "Maszkot viselni: szerepek.",
+      "Más maszkot visel: bizalmatlanság.",
+      "Maszk leesik: igazság.",
+      "Több maszk: identitásrétegek."
+    ]
+  },
+  {
+    "kulcsszo": "színpad",
+    "jelentesek": [
+      "Színpadon állni: önkifejezés.",
+      "Nézőtér üres: magány.",
+      "Más a színpadon: inspiráció.",
+      "Elhagyni a színpadot: rejtőzködés."
+    ]
+  },
+  {
+    "kulcsszo": "szemüveg",
+    "jelentesek": [
+      "Szemüveget felvenni: tiszta látás.",
+      "Elveszíteni: félreértés.",
+      "Törött szemüveg: önkép torzulása.",
+      "Más szemüvegét viselni: más nézőpont."
+    ]
+  },
+  {
+    "kulcsszo": "tánc",
+    "jelentesek": [
+      "Szabad tánc: öröm, felszabadulás.",
+      "Kényszerű tánc: kontrollvesztés.",
+      "Másokkal táncolni: kapcsolódás.",
+      "Táncot nézni: inspiráció."
+    ]
+  },
+  {
+    "kulcsszo": "szín",
+    "jelentesek": [
+      "Erős színek: intenzív érzelmek.",
+      "Elszíntelenedett világ: depresszió.",
+      "Váltakozó színek: változás.",
+      "Fekete-fehér álom: elhatároltság."
+    ]
+  },
+  {
+    "kulcsszo": "harang",
+    "jelentesek": [
+      "Harang szól: fontos üzenet.",
+      "Harang zúgása: változás közeledik.",
+      "Néma harang: elfojtás.",
+      "Harangot törni: ellenállás."
+    ]
+  },
+  {
+    "kulcsszo": "kristály",
+    "jelentesek": [
+      "Kristály látványa: tisztaság.",
+      "Repedt kristály: lelki törés.",
+      "Kristályt tartani: fókusz.",
+      "Kristállyal kommunikálni: spirituális kapcsolat."
+    ]
+  },
+  {
+    "kulcsszo": "boszorkány",
+    "jelentesek": [
+      "Boszorkány támad: női árnyékenergia.",
+      "Boszorkánnyal beszélni: misztikus tudás.",
+      "Repülő boszorkány: szabadság a sötét oldalon.",
+      "Barátságos boszorkány: gyógyító női erő."
+    ]
+  },
+  {
+    "kulcsszo": "pók",
+    "jelentesek": [
+      "Pók látványa: kreativitás.",
+      "Hálójába ragadni: csapdahelyzet.",
+      "Pókot megölni: félelmek legyőzése.",
+      "Pók védelme: saját határok erősítése."
+    ]
+  },
+  {
+    "kulcsszo": "tojás",
+    "jelentesek": [
+      "Tojás törik: sérülékenység.",
+      "Tojás kikel: új ötlet.",
+      "Sok tojás: bőség.",
+      "Üres tojáshéj: kiüresedett lehetőség."
+    ]
+  },
+  {
+    "kulcsszo": "szív",
+    "jelentesek": [
+      "Lüktető szív: élni akarás.",
+      "Sebes szív: trauma.",
+      "Fénylő szív: szeretet.",
+      "Szív nélkül: érzelmi elzáródás."
+    ]
+  }
+]
+
+}
