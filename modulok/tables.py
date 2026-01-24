@@ -109,26 +109,26 @@ nakshatra_hangnemek = {
 }
 
 varga_factors = {
-    "D1 (Rashi)": 1,
-    "D2 (Hora)": 15,
-    "D3 (Drekkana)": 10,
-    "D4 (Chaturthamsa)": 7.5,
-    "D5 (Panchamsa)": 6,
-    "D6 (Shashthamsa)": 5,
-    "D7 (Saptamsa)": 4.28,
-    "D8 (Ashtamsa)": 3.75,
-    "D9 (Navamsha)": 3.3333,
-    "D10 (Dasamsa)": 3,
-    "D11 (Rudramsa)": 2.8,
-    "D12 (Dwadasamsa)": 2.5,
-    "D16 (Shodasamsa)": 1.875,
-    "D20 (Vimsamsa)": 1.5,
-    "D24 (Chaturvimsamsa)": 1.25,
-    "D27 (Nakshatramsa)": 1.1,
-    "D30 (Trimsamsa)": 1,
-    "D40 (Khavedamsa)": 0.75,
-    "D45 (Akshavedamsa)": 0.6,
-    "D60 (Shashtyamsa)": 0.5,
+    "D1 (Rashi)": 1,                 # test, egyéniség, ego, alapvető sorsmintázat
+    "D2 (Hora)": 15,                 # egészség, anyagi helyzet, egzisztencia, vitalitás
+    "D3 (Drekkana)": 10,             # erő, bátorság, testvérek, kezdeményezés
+    "D4 (Chaturthamsa)": 7.5,        # otthon, lélek, érzelmi alap, belső stabilitás
+    "D5 (Panchamsa)": 6,             # gyerek, kreativitás, intuíció, önkifejezés
+    "D6 (Shashthamsa)": 5,           # nehézségek, munka, betegségek, szolgálat
+    "D7 (Saptamsa)": 4.28,           # társ, munkatárs, házastárs, kapcsolati dinamika
+    "D8 (Ashtamsa)": 3.75,           # változás, spiritualitás, krízisek, transzformáció
+    "D9 (Navamsha)": 3.3333,         # tudás, tudat, dharma, házasság magasabb szintje
+    "D10 (Dasamsa)": 3,              # siker, hivatás, társadalmi szerep
+    "D11 (Rudramsa)": 2.8,           # erőpróbák, karmikus akadályok, kitartás
+    "D12 (Dwadasamsa)": 2.5,         # mélyebb spiritualitás, ősök, családi örökség
+    "D16 (Shodasamsa)": 1.875,       # járművek, komfort, luxus, finom örömök
+    "D20 (Vimsamsa)": 1.5,           # hit, mantra, spirituális gyakorlatok
+    "D24 (Chaturvimsamsa)": 1.25,    # tanulás, tudomány, intelligencia, oktatás
+    "D27 (Nakshatramsa)": 1.1,       # erősségek, gyengeségek, finom testi energiák
+    "D30 (Trimsamsa)": 1,            # hibák, árnyékok, belső démonok, balsors
+    "D40 (Khavedamsa)": 0.75,        # anyai ág, finom karmák, érzelmi lenyomatok
+    "D45 (Akshavedamsa)": 0.6,       # apai ág, karakter mélyrétegei
+    "D60 (Shashtyamsa)": 0.5,        # előző életek, gyökérkarma, sors esszenciája
 }
 
 nakshatras = [
