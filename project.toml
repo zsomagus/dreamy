@@ -1,0 +1,17 @@
+[tool.poetry]
+name = "dreamy-widget"
+version = "0.1.0"
+description = "Álomnapló és prashna horoszkóp – Dreamy Widget"
+authors = ["Zsomagus"]
+readme = "README.md"
+packages = [{ include = "dreamy" }]
+
+[tool.poetry.dependencies]
+python = ">=3.10"
+PyQt5 = "*"
+pendulum = "*"
+swisseph = "*"
+matplotlib = "*"
+
+[tool.poetry.scripts]
+dreamy = "dreamy.__main__:main"
