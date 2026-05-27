@@ -1,6 +1,7 @@
 import os
 import json
 import pendulum
+from datetime import datetime
 
 from PyQt5.QtWidgets import (
     QWidget, QVBoxLayout, QLabel, QTextEdit, QComboBox,
@@ -13,7 +14,7 @@ from PyQt5.QtCore import Qt
 from modulok import astro_core
 from modulok.draw import rajzol_del_indiai_horoszkop
 from modulok.config import fill_coordinate_entries
-from modulok.load_alomszotar import load_alomszotar
+from modulok.load_alomszotar import load_alomszotar, keres_alomjelentes
 from modulok.tables import tithi_info
 from modulok import prashna_core
 # Importáljuk a zenei prompt készítőt
@@ -31,7 +32,7 @@ class DreammyWidget(QWidget):
         self.initUI()
         self.load_dreams()
         self.showMaximized()
-      
+        self.current_prashna_pixmap = None
     def initUI(self):
         main_layout = QHBoxLayout(self)
         splitter = QSplitter(Qt.Horizontal)
@@ -136,47 +137,78 @@ class DreammyWidget(QWidget):
         folder = os.path.join(downloads, "Álmaim")
         os.makedirs(folder, exist_ok=True)
         return folder
-
     def levag_ragokat(self, szo: str) -> str:
+        # Szigorúbb, pontosabb rageltávolítás, hogy ne csonkítsa a szótöveket "he"-re és "ma"-ra
         ragok = ["ban", "ben", "val", "vel", "hoz", "hez", "höz",
-                 "nak", "nek", "t", "k", "ok", "ek", "ök"]
+                 "nak", "nek", "ból", "ből", "ről", "ről", "tól", "től"]
         for rag in ragok:
-            if szo.lower().endswith(rag):
+            if szo.lower().endswith(rag) and len(szo) > len(rag) + 2:
                 return szo[:-len(rag)]
+        
+        # Külön kezeljük a tárgyragot és többes számot, de csak ha nem teszi tönkre a szót
+        if len(szo) > 3:
+            if szo.lower().endswith("t") and szo.lower()[-2] in ["a", "e", "o", "ó", "é"]:
+                return szo[:-1]
+            if szo.lower().endswith("k") and szo.lower()[-2] in ["o", "e", "ö", "a"]:
+                return szo[:-2]
         return szo
 
     # ---------- Mentés + értelmezés ----------
-# A dreamy_widget.py megfelelő import szekciójába:
-
     def save_and_analyze(self):
         import pendulum
-        import os  # 🎯 JAVÍTÁS: Nagyon fontos, különben a függvény vége NameError-t dob!
-        
+        import os
+        from PyQt5.QtGui import QPixmap
+        from PyQt5.QtCore import Qt
+        from modulok.music_prompt import build_music_prompt
+        from modulok.score_renderer import export_score_to_pdf_and_png
+
         text = self.dreamText.toPlainText().strip()
         if not text:
             return
 
         mood = self.moodSelector.currentText().strip()
         keywords = self.keywordInput.text().strip()
+        
         now = pendulum.now("Europe/Budapest")
         datum_str = now.format("YYYY-MM-DD HH:mm")
-        
-        # 🕒 IDŐKÓD GENERÁLÁSA A FÁJLNEVEKHEZ (Pl: 20260523_160530)
         idokod = now.format("YYYYMMDD_HHmmss")
 
-        # Álomszótár keresés
+        # === 🔮 ÁLOMSZÓTÁR MOTOR (HEGY HIBÁTÓL MEGTISZTÍTVA) ===
         talalatok = []
         szimbolumok = []
-        szavak = text.split()
-        szavak_tovei = [self.levag_ragokat(szo) for szo in szavak]
+        
+        szavak = [s.strip().lower() for s in text.split() if len(s.strip()) > 2]
+        szavak_tovei = [self.levag_ragokat(s) for s in szavak]
 
-        for kulcs in self.szotar.keys():
-            for szo in szavak_tovei:
-                if kulcs.lower() == szo.lower():
-                    szimbolumok.append(kulcs)
-                    talalatok.append(f"{kulcs}: {self.szotar[kulcs]}")
+        egyedi_kulcsszavak = [k.strip().lower() for k in keywords.split(",") if k.strip()]
+        minden_keresett_kifejezes = list(set(szavak_tovei + egyedi_kulcsszavak))
 
-        # JSON napló mentése
+        for szo in minden_keresett_kifejezes:
+            if not szo or len(szo) < 3: # Túl rövid töredékeket (pl: "he", "ma") nem engedünk át
+                continue
+            for item in self.szotar.get("alomszotar", []):
+                if isinstance(item, dict):
+                    kulcsszo = item.get("kulcsszo", "").lower().strip()
+                    
+                    # Szigorú, értelmes egyezés: vagy pontosan egyezik, vagy a teljes szótári szó szerepel a beírt szövegben
+                    if szo == kulcsszo or kulcsszo in szo:
+                        jelentesek = item.get("jelentesek", [])
+                        for j in jelentesek:
+                            sor = f"• {kulcsszo.capitalize()}: {j}"
+                            if sor not in talalatok:
+                                talalatok.append(sor)
+                        
+                        if kulcsszo not in szimbolumok:
+                            szimbolumok.append(kulcsszo)
+
+        if talalatok:
+            self.resultArea.setText("🔮 Értelmezések:\n\n" + "\n".join(talalatok))
+        else:
+            self.resultArea.setText("❌ Nincs találat az álomszótárban.\n\n"
+                                  f"Próbált kulcsszavak: {', '.join(minden_keresett_kifejezes)}\n\n"
+                                  "Próbáld: ablak, ház, víz, kutya, stb.")
+
+        # === MENTÉS JSON-BE ÉS TÁBLÁZAT FRISSÍTÉS ===
         entry = {
             "Dátum": datum_str,
             "Hangulat": mood,
@@ -188,53 +220,25 @@ class DreammyWidget(QWidget):
         self.save_to_file()
         self.update_table()
 
-        if talalatok:
-            self.resultArea.setText("🔮 Értelmezések:\n" + "\n".join(talalatok))
-        else:
-            self.resultArea.setText("Nincs találat az álomszótárban.")
-
-        # ─── PRASHNA HOROSZKÓP FRISSÍTÉS ───
         # ─── PRASHNA HOROSZKÓP FRISSÍTÉS ───
         pixmap = self.generate_prashna_chart()
-        
-        if pixmap:
-            self.current_prashna_pixmap = pixmap
-            # 🎯 JAVÍTÁS: Közvetlenül a felületen létező self.prashnaLabel-re tesszük rá a képet!
-            self.update_prashna_pixmap()
-            # Dinamikusan megkeressük azt a QLabel-t, ami a horoszkópé
-            from PyQt5.QtWidgets import QLabel
-            labels = self.findChildren(QLabel)
-            for lbl in labels:
-                # Olyan üres labeleket keresünk, amik nem a kottához tartoznak
-                if not lbl.text() and lbl != getattr(self, 'score_chart_label', None):
-                    lbl.setPixmap(pixmap)
-                    lbl.setScaledContents(True)  # Szépen méretezi a sárga ábrát a cellában
-                    break
+        # Itt már a generate elvégzi a belső mentést és a kirakást is!
 
-        # ─── 🎵 KOTTA ÉS PROMPT GENERÁLÁSI LÁNC A FÜGGVÉNY VÉGÉN ───
-        # 1. Összeállítjuk az angol AI szöveget
+        # ─── KOTTA ÉS AI PROMPT LÁNC FRISSÍTÉSE ───
         prompt_text = build_music_prompt(text, mood, keywords, szimbolumok)
-        
-        # 2. Megjelenítjük a nyers, másolható szöveget a szövegdobozban
         self.scoreInfo.setText(prompt_text)
 
-        # 3. Kotta PDF és PNG generálása és mentése IDŐKÓDDAL az Álmaim mappába
-        folder = self.get_output_folder()  # Letöltések/Álmaim
+        folder = self.get_output_folder()
         bázis_név = f"kotta_prompt_{idokod}"
-        
-        # Meghívjuk a kottalap készítőt
         pdf_ut, png_ut = export_score_to_pdf_and_png(prompt_text, folder, bázis_név)
 
-        # 4. A legenerált kottalap képének azonnali betöltése a felületre!
         if os.path.exists(png_ut):
             self.current_score_pixmap = QPixmap(png_ut)
             self.update_score_pixmap()
-    # ---------- Prashna ----------
+
     def generate_prashna_chart(self):
-        # 🎯 JAVÍTÁS: A valós, koordináta panel által elmentett változókat olvassuk be!
-        # Ha még nem nyitottad meg a panelt, alapértelmezetten Budapest (47.4979, 19.0402)
-        lat = getattr(self, "prashna_latitude", 47.4979)
-        lon = getattr(self, "prashna_longitude", 19.0402)
+        lat = getattr(self, "prashna_latitude", 46.8572)
+        lon = getattr(self, "prashna_longitude", 18.1533)
 
         import pendulum
         from modulok import astro_core
@@ -242,7 +246,6 @@ class DreammyWidget(QWidget):
 
         now = pendulum.now("Europe/Budapest")
 
-        # Hajszálpontos védikus adatok lekérése a megfelelő időzónával
         res = astro_core.get_varga_chart_data(
             year=now.year,
             month=now.month,
@@ -255,28 +258,33 @@ class DreammyWidget(QWidget):
             varga_label="D1 (Rashi)"
         )
 
-        # Frissítjük a Tithi feliratot is a horoszkóp alatt, hogy látszódjon az eredmény
-        if "tithi" in res:
+        if "tithi" in res and hasattr(self, 'tithiLabel'):
             from modulok.tables import tithi_info
             t_num = res["tithi"]
-            t_nev = tithi_info.get(t_num, {}).get("hu", "")
+            t_nev = tithi_info.get(t_num, {}).get("hu", "Ismeretlen Tithi")
             t_leiras = tithi_info.get(t_num, {}).get("leiras", "")
             self.tithiLabel.setText(f"<b>Tithi: {t_num} - {t_nev}</b><br/>{t_leiras}")
 
-        # Horoszkóp megrajzolása (A draw.py most már megkapja a valós, jó adatokat!)
         pixmap = rajzol_del_indiai_horoszkop(
             planet_data=res["planet_data"],
-            tithi=res["tithi"],
+            tithi=res.get("tithi", 1),
             horoszkop_nev="D1",
             is_prashna=True
         )
-        
+
+        # 🎯 ITT VOLT A HIBA: Elmentjük a központi változóba és azonnal rárakjuk a felületre!
+        if pixmap:
+            self.current_prashna_pixmap = pixmap
+            self.update_prashna_pixmap()
+
         return pixmap
     def update_prashna_pixmap(self):
         if not self.current_prashna_pixmap:
             return
         scaled = self.current_prashna_pixmap.scaled(
-            self.prashnaLabel.size(), Qt.KeepAspectRatio, Qt.SmoothTransformation
+            self.prashnaLabel.size(), 
+            Qt.KeepAspectRatio, 
+            Qt.SmoothTransformation
         )
         self.prashnaLabel.setPixmap(scaled)
     def update_score_pixmap(self):

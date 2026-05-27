@@ -18,8 +18,15 @@ def load_alomszotar(filepath: str = None):
 
 # Példa: keresés egy kulcsszóra
 def keres_alomjelentes(kulcsszo: str, data: dict):
+    """Keresés részleges egyezéssel is"""
+    talalatok = []
+    kulcsszo = kulcsszo.lower().strip()
+    
     for item in data.get("alomszotar", []):
-        if item["kulcsszo"] == kulcsszo:
-            return item["jelentesek"]
-    return ["Nincs találat az álomszótárban."]
-
+        item_kulcsszo = item.get("kulcsszo", "").lower()
+        if kulcsszo in item_kulcsszo or item_kulcsszo in kulcsszo:
+            talalatok.extend(item.get("jelentesek", []))
+    
+    if talalatok:
+        return talalatok
+    return ["Nincs találat az álomszótárban erre a kulcsszóra."]

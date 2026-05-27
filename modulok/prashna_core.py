@@ -43,7 +43,7 @@ def get_current_prashna_data(latitude: float = 47.30, longitude: float = 19.05):
         "latitude": latitude,
         "longitude": longitude,
         "tithi": tithi,
-        "planet_data": planet_data,
+        "planet_data": res.get("planet_data", {}),
         "varga_label": "D1 (Rashi)",
         "varga_code": "D1",
         "raw_res": res

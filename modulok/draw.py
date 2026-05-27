@@ -6,7 +6,7 @@ from PyQt5.QtGui import QPixmap
 from io import BytesIO
 from modulok import tables
 from modulok.astro_core import find_yantra_by_tithi
-
+from modulok.config import YANTRA_PATH
 def rajzol_del_indiai_horoszkop(
     planet_data,
     tithi,
@@ -39,15 +39,20 @@ def rajzol_del_indiai_horoszkop(
                 ax.plot([x, x], [y + 1, y], color="green", linewidth=4)
 
     # ─── 1. YANTRA BEILLESZTÉSE ───
-    # Dinamikusan megkeressük a Tithihez tartozó yantra képét az astro_core segítségével
-    from modulok.astro_core import find_yantra_by_tithi
+   # ─── 1. YANTRA BEILLESZTÉSE ───
     yantra_path = find_yantra_by_tithi(tithi)
     if yantra_path and os.path.exists(yantra_path):
         try:
             yantra_img = Image.open(yantra_path)
-            ax.imshow(yantra_img, extent=[1.005, 2.995, 2.995, 1.005], zorder=1)
-        except Exception:
-            pass
+            # Korrigált kiterjedés (extent) a fordított Y tengelyhez mérten [bal, jobb, alsó, felső]
+            ax.imshow(yantra_img, extent=[1.0, 3.0, 3.0, 1.0], zorder=2, alpha=0.95)
+            print(f"Yantra sikeresen elhelyezve a középpontban: {yantra_path}")
+        except Exception as e:
+            print(f"Yantra megjelenítési hiba: {e}")
+    else:
+        print(f"Yantra nem található a megadott Tithihez: {yantra_path}")
+    # ─── BOLYGÓK ÉS JEGYEK RAJZOLÁSA ───
+    # ... (a meglévő kód maradjon meg alatta)
 
     # ─── 2. AYANAMSA MEGHATÁROZÁSA ───
     ayanamsa = 24.24  # Gyári fallback érték 2026-ra
@@ -60,22 +65,21 @@ def rajzol_del_indiai_horoszkop(
 
     for planet in planet_data:
         if planet in ervenyes_bolygok:
-            # Megbízható adatkinyerés: támogatja a szótár (dict) és az objektum struktúrát is
             p_info = planet_data[planet]
-            if isinstance(p_info, dict):
-                tropical_lon = p_info.get("longitude", 0.0)
-            else:
-                tropical_lon = getattr(p_info, "longitude", 0.0)
             
-            # Levonjuk az ayanamsát a sziderikus (védikus) zodiákushoz
-            sidereal_lon = (tropical_lon - ayanamsa) % 360
-
-            # Kiszámoljuk, melyik jegybe esik (1 = Kos, 2 = Bika ... 12 = Halak)
-            sign = int(sidereal_lon // 30) + 1
+            # Ha az új struktúránk szerint megvan a közvetlen védikus jegy, azt használjuk
+            if isinstance(p_info, dict) and "vedic_sign" in p_info:
+                sign = p_info["vedic_sign"]
+                rasi_deg = p_info["rasi_deg"]
+            else:
+                # Fallback, ha régi struktúrából jönne adat
+                lon = p_info.get("longitude", 0.0) if isinstance(p_info, dict) else getattr(p_info, "longitude", 0.0)
+                sign = int(lon // 30) + 1
+                rasi_deg = lon % 30
 
             abbrev = tables.planet_abbreviations.get(planet, planet[:2].upper())
-            house_planets[sign].append((planet, abbrev, sidereal_lon % 30))
-
+            house_planets[sign].append((planet, abbrev, rasi_deg))
+            
     # ─── 4. BOLYGÓK RAJZOLÁSA (Maximálisan scannálható elrendezés) ───
     for hszam, (x, y) in tables.house_positions.items():
         bolygok = house_planets[hszam]

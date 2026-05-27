@@ -51,10 +51,34 @@ def get_varga_chart_data(year: int, month: int, day: int, hour: int, minute: int
             raise ValueError(f"Nincs ilyen varga: {varga_code}")
     
     planet_data = {}
+    
+    # 🎯 OKOSÍTÁS: Biztonságosan kinyerjük az ayanamsa értékét számmá alakítva (float)
+    raw_ayanamsa = getattr(chart, "ayanamsa", 24.24)
+    try:
+        ayanamsa_val = float(raw_ayanamsa)
+    except (TypeError, ValueError):
+        if hasattr(raw_ayanamsa, "value"):
+            ayanamsa_val = float(raw_ayanamsa.value)
+        else:
+            ayanamsa_val = 24.24
+
+    # Elmentjük számlálható formában a későbbi moduloknak
+    planet_data["ayanamsa"] = ayanamsa_val
     for p in rasi_chart.planets:
         pname = p.celestial_body
+        
+        # A jyotishganit p.sign_index-e 0 (Kos) és 11 (Halak) között van.
+        # Ebből a védikus jegy sorszáma: 1 (Kos) .. 12 (Halak)
+        sign_index = getattr(p, "sign_index", 0)
+        vedic_sign_1_12 = sign_index + 1
+        
+        # Ezt a fokot közvetlenül a jegyen belül adja meg a motor (0-30 között)
+        rasi_deg = float(p.sign_degrees)
+        
         planet_data[pname] = {
-            "longitude": float(p.sign_degrees),
+            "longitude": float((sign_index * 30) + rasi_deg), # tiszta sziderikus fok
+            "vedic_sign": vedic_sign_1_12,                    # 🎯 KÖZVETLEN JEGY SZÁM (1-12)
+            "rasi_deg": rasi_deg,                             # 🎯 KÖZVETLEN FOK A JEGYEN BELÜL
             "sign": p.sign,
             "nakshatra": p.nakshatra,
             "house": p.house,
@@ -62,7 +86,7 @@ def get_varga_chart_data(year: int, month: int, day: int, hour: int, minute: int
             "nakshatra_lord": getattr(p, "nakshatra_lord", None) or "Unknown"
         }
 
-    return {
+        return {
         "varga_label": varga_label,
         "varga_code": varga_code,
         "factor": get_varga_factor(varga_label),
