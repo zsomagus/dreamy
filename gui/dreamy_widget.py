@@ -316,22 +316,22 @@ class DreammyWidget(QWidget):
         buttons = QDialogButtonBox(QDialogButtonBox.Ok | QDialogButtonBox.Cancel)
         layout.addRow(buttons)
 
-        
-    def keres():
-        city = city_input.text().strip()
-        if city:
-           fill_coordinate_entries(city, lat_input, lon_input)
+        # ✅ JAVÍTVA: belső függvények helyesen behúzva a show_coord_panel-en belülre
+        def keres():
+            city = city_input.text().strip()
+            if city:
+                fill_coordinate_entries(city, lat_input, lon_input)
 
         city_input.editingFinished.connect(keres)
 
-    def accept():
-        try:
-            self.prashna_latitude = float(lat_input.text())
-            self.prashna_longitude = float(lon_input.text())
-            self.generate_prashna_chart()
-        except ValueError:
-            pass
-        dialog.accept()
+        def accept():
+            try:
+                self.prashna_latitude = float(lat_input.text())
+                self.prashna_longitude = float(lon_input.text())
+                self.generate_prashna_chart()
+            except ValueError:
+                pass
+            dialog.accept()
 
         buttons.accepted.connect(accept)
         buttons.rejected.connect(dialog.reject)

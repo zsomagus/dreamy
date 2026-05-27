@@ -18,11 +18,35 @@ def calculate_nakshatra(longitude, ayanamsa, nakshatras):
 def find_yantra_by_tithi(tithi, yantra_folder=YANTRA_PATH):
     if not os.path.exists(yantra_folder):
         return None
-    for fname in os.listdir(yantra_folder):
-        if fname.lower().endswith(".jpg") and fname.startswith(str(tithi)):
-            return os.path.join(yantra_folder, fname)
-    return None
+        
+    # Kinyerjük a tithi sorszámát (ha pl. szövegként vagy objektumként jönne)
+    tithi_szam = str(tithi)
+    if hasattr(tithi, "number"):
+        tithi_szam = str(tithi.number)
+    elif isinstance(tithi, str):
+        # Ha szövegesen tartalmazza a Védikus elnevezést
+        tithi_nevek = ["pratipat", "dwitiya", "tritiya", "chaturthi", "panchami", "shashti", 
+                       "saptami", "ashtami", "navami", "dashami", "ekadashi", "dwadashi", 
+                       "trayodashi", "chaturdashi", "purnima", "amavasya"]
+        for i, nev in enumerate(tithi_nevek):
+            if nev in tithi.lower():
+                # Shukla (1-15), Krishna (16-30)
+                eltolas = 15 if "krishna" in tithi.lower() else 0
+                tithi_szam = str(i + 1 + eltolas)
+                break
 
+    # Csak a tiszta számjegyeket tartjuk meg (pl. "12")
+    tithi_szam = "".join([c for c in tithi_szam if c.isdigit()])
+    if not tithi_szam:
+        return None
+
+    for fname in os.listdir(yantra_folder):
+        if fname.lower().endswith(".jpg"):
+            # Ellenőrizzük, hogy a fájlnév eleje egyezik-e a tithi számával (pl. "12.jpg" vagy "12_yantra.jpg")
+            alap_nev = fname.split(".")[0].split("_")[0]
+            if alap_nev == tithi_szam:
+                return os.path.join(yantra_folder, fname)
+    return None
 def extract_varga_code(label: str) -> str:
     return label.split()[0]
 
@@ -62,31 +86,49 @@ def get_varga_chart_data(year: int, month: int, day: int, hour: int, minute: int
         else:
             ayanamsa_val = 24.24
 
-    # Elmentjük számlálható formában a későbbi moduloknak
-    planet_data["ayanamsa"] = ayanamsa_val
+    # Védikus jegyek sorrendje (1-től 12-ig)
+    jegy_sorrend = ["Aries", "Taurus", "Gemini", "Cancer", "Leo", "Virgo", 
+                    "Libra", "Scorpio", "Sagittarius", "Capricorn", "Aquarius", "Pisces"]
+
     for p in rasi_chart.planets:
         pname = p.celestial_body
         
-        # A jyotishganit p.sign_index-e 0 (Kos) és 11 (Halak) között van.
-        # Ebből a védikus jegy sorszáma: 1 (Kos) .. 12 (Halak)
-        sign_index = getattr(p, "sign_index", 0)
-        vedic_sign_1_12 = sign_index + 1
-        
-        # Ezt a fokot közvetlenül a jegyen belül adja meg a motor (0-30 között)
+        # 🎯 JAVÍTÁS: A szöveges 'sign' mezőből keressük ki a jegy sorszámát (1-12)
+        angol_jegy = getattr(p, "sign", "Aries")
+        if angol_jegy in jegy_sorrend:
+            vedic_sign_1_12 = jegy_sorrend.index(angol_jegy) + 1
+        else:
+            vedic_sign_1_12 = 1  # Fallback a biztonság kedvéért
+            
+        sign_index = vedic_sign_1_12 - 1
         rasi_deg = float(p.sign_degrees)
         
         planet_data[pname] = {
-            "longitude": float((sign_index * 30) + rasi_deg), # tiszta sziderikus fok
-            "vedic_sign": vedic_sign_1_12,                    # 🎯 KÖZVETLEN JEGY SZÁM (1-12)
-            "rasi_deg": rasi_deg,                             # 🎯 KÖZVETLEN FOK A JEGYEN BELÜL
-            "sign": p.sign,
+            "longitude": float((sign_index * 30) + rasi_deg), # Tiszta sziderikus védikus fok
+            "vedic_sign": vedic_sign_1_12,                    # Garantáltan jó jegyszám (1-12)
+            "rasi_deg": rasi_deg,                             # Fok a jegyen belül (0-30)
+            "sign": angol_jegy,
             "nakshatra": p.nakshatra,
             "house": p.house,
             "rashi_lord": getattr(p, "rashi_lord", None) or "Unknown",
             "nakshatra_lord": getattr(p, "nakshatra_lord", None) or "Unknown"
         }
-
-        return {
+    # 🎯 JAVÍTÁS: Kinyerjük az Aszcendens (Ascendant) sziderikus jegyét és adatait
+    if hasattr(rasi_chart, "ascendant") and rasi_chart.ascendant:
+        asc_obj = rasi_chart.ascendant
+        angol_jegy = getattr(asc_obj, "sign", "Aries")
+        
+        if angol_jegy in jegy_sorrend:
+            asc_vedic_sign = jegy_sorrend.index(angol_jegy) + 1
+        else:
+            asc_vedic_sign = 1
+            
+        planet_data["ASC"] = {
+            "vedic_sign": asc_vedic_sign,
+            "rasi_deg": float(getattr(asc_obj, "sign_degrees", 0.0)),
+            "sign": angol_jegy
+        }
+    return {
         "varga_label": varga_label,
         "varga_code": varga_code,
         "factor": get_varga_factor(varga_label),

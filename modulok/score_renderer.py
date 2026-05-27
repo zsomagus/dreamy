@@ -47,7 +47,8 @@ def export_score_to_pdf_and_png(prompt_text, folder, base_name):
 
     # 4. AZ AI PROMPT SZÖVEG KIÍRÁSA A KOTTA ALÁ
     ax.text(0.1, 0.68, "📋 GENERATED AI PROMPT FOR GEMINI:", 
-    transform=ax.transAxes, color='#222222', fontsize=12, fontweight='bold', ha='left')    
+    transform=ax.transAxes,             
+    fontsize=45, ha='left', va='center', fontname='Segoe UI Symbol')
     # A prompt szöveg soronkénti tördelése és formázása
     lines = prompt_text.split('\n')
     y_pos = 0.63  # Szöveg kezdőmagassága a kotta alatt
@@ -87,7 +88,6 @@ def export_score_to_pdf_and_png(prompt_text, folder, base_name):
             y_pos -= 0.03
             
     # 5. MENTÉS (PDF és PNG formátumban is)
-    plt.savefig(png_path, bbox_inches='tight', facecolor=fig.get_facecolor(), dpi=150)
     plt.savefig(pdf_path, bbox_inches='tight', facecolor=fig.get_facecolor(), dpi=150)
     plt.close()
     

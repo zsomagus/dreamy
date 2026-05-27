@@ -38,19 +38,15 @@ def rajzol_del_indiai_horoszkop(
                 ax.plot([x + 1, x], [y + 1, y + 1], color="green", linewidth=4)
                 ax.plot([x, x], [y + 1, y], color="green", linewidth=4)
 
-    # ─── 1. YANTRA BEILLESZTÉSE ───
-   # ─── 1. YANTRA BEILLESZTÉSE ───
+  # ─── 1. YANTRA BEILLESZTÉSE ───
     yantra_path = find_yantra_by_tithi(tithi)
     if yantra_path and os.path.exists(yantra_path):
         try:
             yantra_img = Image.open(yantra_path)
-            # Korrigált kiterjedés (extent) a fordított Y tengelyhez mérten [bal, jobb, alsó, felső]
+            # 🎯 JAVÍTÁS: [X_min, X_max, Y_max, Y_min] a tükrözött Matplotlib tengely miatt
             ax.imshow(yantra_img, extent=[1.0, 3.0, 3.0, 1.0], zorder=2, alpha=0.95)
-            print(f"Yantra sikeresen elhelyezve a középpontban: {yantra_path}")
-        except Exception as e:
-            print(f"Yantra megjelenítési hiba: {e}")
-    else:
-        print(f"Yantra nem található a megadott Tithihez: {yantra_path}")
+        except Exception:
+            pass
     # ─── BOLYGÓK ÉS JEGYEK RAJZOLÁSA ───
     # ... (a meglévő kód maradjon meg alatta)
 
@@ -102,7 +98,7 @@ def rajzol_del_indiai_horoszkop(
                 label,
                 ha="center",
                 va="center",
-                fontsize=16,
+                fontsize=30,
                 fontweight="bold",
                 color="black",
             )
@@ -110,16 +106,25 @@ def rajzol_del_indiai_horoszkop(
     # ─── 5. ASZCENDENS (ASC) KIRAJZOLÁSA VÉDIKUS HELYZET ALAPJÁN ───
     if "ASC" in planet_data:
         p_info = planet_data["ASC"]
-        asc_tropical = p_info.get("longitude", 0.0) if isinstance(p_info, dict) else getattr(p_info, "longitude", 0.0)
         
-        asc_sidereal = (asc_tropical - ayanamsa) % 360
-        asc_sign = int(asc_sidereal // 30) + 1
-
-        if asc_sign in tables.house_positions:
-            ax_x, ax_y = tables.house_positions[asc_sign]
-            ax.plot([ax_x, ax_x + 1], [ax_y, ax_y + 1], color="red", linewidth=2.5, linestyle="--")
-            ax.text(ax_x + 0.15, ax_y + 0.25, "Asc", color="red", fontsize=14, fontweight="bold")
-
+        if isinstance(p_info, dict) and "vedic_sign" in p_info:
+            asc_sign = p_info["vedic_sign"]
+            
+            if asc_sign in tables.house_positions:
+                ax_x, ax_y = tables.house_positions[asc_sign]
+                # Piros átlós sarokvonal az Aszcendens házának jelölésére
+                ax.plot([ax_x, ax_x + 1], [ax_y, ax_y + 1], color="red", linewidth=4, zorder=4)
+                
+                # Kiírjuk az "Asc" feliratot is a sarokba
+                ax.text(
+                    ax_x + 0.15, 
+                    ax_y + 0.25, 
+                    "Asc", 
+                    color="red", 
+                    fontsize=16, 
+                    fontweight="bold",
+                    zorder=5
+                )
     # Pufferbe mentés és visszaadás a GUI-nak
     buf = BytesIO()
     plt.savefig(buf, format="png", bbox_inches="tight", dpi=100, facecolor=fig.get_facecolor())

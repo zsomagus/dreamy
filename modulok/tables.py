@@ -411,21 +411,21 @@ planet_abbreviations = {
     "ASC": "As",
 }
 # Házpozíciók (dél-indiai rendszer, 1-től 12-ig)
+# 🎯 JAVÍTÁS: A dél-indiai óramutató járása szerinti fix elrendezés (Y=0 a felső sor, Y=3 az alsó sor)
 house_positions = {
-    1: (1, 3),  # Kos
-    2: (2, 3),  # Bika
-    3: (3, 3),  # Ikrek
-    4: (3, 2),  # Rák
-    5: (3, 1),  # Oroszlán
-    6: (3, 0),  # Szűz
-    7: (2, 0),  # Mérleg
-    8: (1, 0),  # Skorpió
-    9: (0, 0),  # Nyilas
-    10: (0, 1),  # Bak
-    11: (0, 2),  # Vízöntő
-    12: (0, 3),  # Halak
+    1:  (1, 0),  # Kos (Felső sor, 2. cella)
+    2:  (2, 0),  # Bika (Felső sor, 3. cella)
+    3:  (3, 0),  # Ikrek (Jobb felső sarok)
+    4:  (3, 1),  # Rák (Jobb oldal, 2. sor)
+    5:  (3, 2),  # Oroszlán (Jobb oldal, 3. sor)
+    6:  (3, 3),  # Szűz (Jobb alsó sarok)
+    7:  (2, 3),  # Mérleg (Alsó sor, 3. cella)
+    8:  (1, 3),  # Skorpió (Alsó sor, 2. cella)
+    9:  (0, 3),  # Nyilas (Bal alsó sarok)
+    10: (0, 2),  # Bak (Bal oldal, 3. sor)
+    11: (0, 1),  # Vízöntő (Bal oldal, 2. sor)
+    12: (0, 0),  # Halak (Bal felső sarok)
 }
-
 purushartha_map = {
     1: {
         1: ("Dharma", "Becsületes élet"),
