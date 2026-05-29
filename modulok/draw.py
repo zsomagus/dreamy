@@ -1,12 +1,8 @@
 # modulok/draw.py
 import os
 import matplotlib.pyplot as plt
-from PIL import Image
-from PyQt5.QtGui import QPixmap
-from io import BytesIO
 from modulok import tables
-from modulok.astro_core import find_yantra_by_tithi
-from modulok.config import YANTRA_PATH
+
 def rajzol_del_indiai_horoszkop(
     planet_data,
     tithi,
@@ -17,13 +13,12 @@ def rajzol_del_indiai_horoszkop(
     keresztnev=None,
     is_prashna=False,
 ):
+    # Visszaállítjuk a hatalmas 20x20-as méretet a szép nagy betűkhöz!
     fig, ax = plt.subplots(figsize=(20, 20))
 
-    # Háttérszín beállítása
     fig.patch.set_facecolor("#FFA500")
     ax.set_facecolor("#FFA500")
 
-    # FIX TENGELYEK: Megfordítjuk az Y tengelyt, hogy a (0,3) a bal felső sarok legyen
     ax.set_xlim(0, 4)
     ax.set_ylim(4, 0)  
     ax.axis("off")
@@ -33,104 +28,81 @@ def rajzol_del_indiai_horoszkop(
     for x in range(4):
         for y in range(4):
             if (x, y) not in exclude_coords:
-                ax.plot([x, x + 1], [y, y], color="green", linewidth=4)
-                ax.plot([x + 1, x + 1], [y, y + 1], color="green", linewidth=4)
-                ax.plot([x + 1, x], [y + 1, y + 1], color="green", linewidth=4)
-                ax.plot([x, x], [y + 1, y], color="green", linewidth=4)
+                ax.plot([x, x + 1], [y, y], color="green", linewidth=5, zorder=2)
+                ax.plot([x + 1, x + 1], [y, y + 1], color="green", linewidth=5, zorder=2)
+                ax.plot([x + 1, x], [y + 1, y + 1], color="green", linewidth=5, zorder=2)
+                ax.plot([x, x], [y + 1, y], color="green", linewidth=5, zorder=2)
 
-  # ─── 1. YANTRA BEILLESZTÉSE ───
-    yantra_path = find_yantra_by_tithi(tithi)
-    if yantra_path and os.path.exists(yantra_path):
-        try:
-            yantra_img = Image.open(yantra_path)
-            # 🎯 JAVÍTÁS: [X_min, X_max, Y_max, Y_min] a tükrözött Matplotlib tengely miatt
-            ax.imshow(yantra_img, extent=[1.0, 3.0, 3.0, 1.0], zorder=2, alpha=0.95)
-        except Exception:
-            pass
-    # ─── BOLYGÓK ÉS JEGYEK RAJZOLÁSA ───
-    # ... (a meglévő kód maradjon meg alatta)
+    # ─── JEGYEK NEVEINEK KIÍRÁSA NAGY BETŰKKEL ───
+    fallbacks = {1:"Kos", 2:"Bika", 3:"Ikrek", 4:"Rák", 5:"Oroszlán", 6:"Szűz", 
+                 7:"Mérleg", 8:"Skorpió", 9:"Nyilas", 10:"Bak", 11:"Vízöntő", 12:"Halak"}
 
-    # ─── 2. AYANAMSA MEGHATÁROZÁSA ───
-    ayanamsa = 24.24  # Gyári fallback érték 2026-ra
-    if isinstance(planet_data, dict) and "ayanamsa" in planet_data:
-        ayanamsa = planet_data["ayanamsa"]
+    for house_num, (x, y) in tables.house_positions.items():
+        hu_name = fallbacks.get(house_num, "")
+        ax.text(
+            x + 0.05, y + 0.15, hu_name, 
+            color="#444444", fontsize=20, fontweight="bold", zorder=3
+        )
 
-    # ─── 3. BOLYGÓK HÁZAKBA RENDEZÉSE VÉDIKUS POZÍCIÓ ALAPJÁN ───
+    # ─── BOLYGÓK HÁZAKBA RENDEZÉSE ───
     house_planets = {i: [] for i in range(1, 13)}
     ervenyes_bolygok = ["Sun", "Moon", "Mars", "Mercury", "Jupiter", "Venus", "Saturn", "Rahu", "Ketu"]
 
     for planet in planet_data:
         if planet in ervenyes_bolygok:
             p_info = planet_data[planet]
-            
-            # Ha az új struktúránk szerint megvan a közvetlen védikus jegy, azt használjuk
-            if isinstance(p_info, dict) and "vedic_sign" in p_info:
-                sign = p_info["vedic_sign"]
-                rasi_deg = p_info["rasi_deg"]
-            else:
-                # Fallback, ha régi struktúrából jönne adat
-                lon = p_info.get("longitude", 0.0) if isinstance(p_info, dict) else getattr(p_info, "longitude", 0.0)
-                sign = int(lon // 30) + 1
-                rasi_deg = lon % 30
-
+            v_lon = p_info.get("vedic_longitude", 0.0)
+            sign = int(v_lon // 30) + 1
             abbrev = tables.planet_abbreviations.get(planet, planet[:2].upper())
-            house_planets[sign].append((planet, abbrev, rasi_deg))
-            
-    # ─── 4. BOLYGÓK RAJZOLÁSA (Maximálisan scannálható elrendezés) ───
+            house_planets[sign].append((planet, abbrev, v_lon % 30))
+
+    # ─── BOLYGÓK TÁGAS, NAGY BETŰS RAJZOLÁSA ───
     for hszam, (x, y) in tables.house_positions.items():
         bolygok = house_planets[hszam]
-
         for idx, (full_name, abbrev, rasi_deg) in enumerate(bolygok):
             fok = int(rasi_deg)
             perc = int((rasi_deg - fok) * 60)
             label = f"{abbrev} {fok}°{perc}'"
 
-            # 2 oszlopos rendezés a cellákon belül, hogy ne fedjék le egymást
             col = idx % 2
             row = idx // 2
-
-            x_pos = x + 0.26 + (col * 0.48)
-            y_pos = y + 0.22 + (row * 0.16)
+            x_pos = x + 0.28 + (col * 0.44)
+            y_pos = y + 0.42 + (row * 0.24)
 
             ax.text(
-                x_pos,
-                y_pos,
-                label,
-                ha="center",
-                va="center",
-                fontsize=30,
-                fontweight="bold",
-                color="black",
+                x_pos, y_pos, label,
+                ha="center", va="center",
+                fontsize=24, fontweight="bold", color="black",
+                zorder=10
             )
 
-    # ─── 5. ASZCENDENS (ASC) KIRAJZOLÁSA VÉDIKUS HELYZET ALAPJÁN ───
+    # ─── ASZCENDENS (ASC) KIRAJZOLÁSA VASTAG ÁTLÓVAL ───
     if "ASC" in planet_data:
         p_info = planet_data["ASC"]
+        asc_lon = p_info.get("vedic_longitude", 0.0)
+        asc_sign = int(asc_lon // 30) + 1
+        rasi_deg = p_info.get("rasi_deg", 0.0)
         
-        if isinstance(p_info, dict) and "vedic_sign" in p_info:
-            asc_sign = p_info["vedic_sign"]
-            
-            if asc_sign in tables.house_positions:
-                ax_x, ax_y = tables.house_positions[asc_sign]
-                # Piros átlós sarokvonal az Aszcendens házának jelölésére
-                ax.plot([ax_x, ax_x + 1], [ax_y, ax_y + 1], color="red", linewidth=4, zorder=4)
-                
-                # Kiírjuk az "Asc" feliratot is a sarokba
-                ax.text(
-                    ax_x + 0.15, 
-                    ax_y + 0.25, 
-                    "Asc", 
-                    color="red", 
-                    fontsize=16, 
-                    fontweight="bold",
-                    zorder=5
-                )
-    # Pufferbe mentés és visszaadás a GUI-nak
-    buf = BytesIO()
-    plt.savefig(buf, format="png", bbox_inches="tight", dpi=100, facecolor=fig.get_facecolor())
-    buf.seek(0)
+        fok = int(rasi_deg)
+        perc = int((rasi_deg - fok) * 60)
+
+        if asc_sign in tables.house_positions:
+            ax_x, ax_y = tables.house_positions[asc_sign]
+            ax.plot([ax_x, ax_x + 1], [ax_y, ax_y + 1], color="red", linewidth=6, zorder=12)
+            ax.text(
+                ax_x + 0.12, ax_y + 0.38, f"Asc {fok}°{perc}'", 
+                color="red", fontsize=24, fontweight="bold", zorder=13
+            )
+
+    # Biztonságos mentés tight-tal, hogy a betűk hatalmasak maradjanak
+    output_dir = os.path.join(os.getcwd(), "output")
+    os.makedirs(output_dir, exist_ok=True)
+    
+    png_path = os.path.join(output_dir, f"prashna_{horoszkop_nev}.png")
+    svg_path = os.path.join(output_dir, f"prashna_{horoszkop_nev}.svg")
+
+    plt.savefig(png_path, format="png", bbox_inches="tight", dpi=100, facecolor=fig.get_facecolor())
+    plt.savefig(svg_path, format="svg", bbox_inches="tight", facecolor=fig.get_facecolor())
     plt.close()
 
-    pixmap = QPixmap()
-    pixmap.loadFromData(buf.getvalue(), "PNG")
-    return pixmap
+    return svg_path, png_path

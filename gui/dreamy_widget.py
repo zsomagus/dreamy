@@ -50,7 +50,7 @@ class DreammyWidget(QWidget):
         self.moodSelector = QComboBox()
         self.moodSelector.addItems([
             "Nyugodt", "Zaklatott", "Misztikus",
-            "Félelmetes", "Boldog", "Zavaros"
+            "Félelmetes", "Boldog", "Zavaros,", "Relaxált/Meditatív"
         ])
 
         self.keywordInput = QLineEdit()
@@ -103,20 +103,44 @@ class DreammyWidget(QWidget):
         left_layout.addWidget(self.resultArea)
         left_layout.addWidget(QLabel("📜 Előzmények"))
         left_layout.addWidget(self.tabs)
-
-        # --- Jobb oldal ---
+# --- Jobb oldal ---
         right_widget = QWidget()
         right_layout = QVBoxLayout(right_widget)
 
-        title_label = QLabel("🕉️ Prashna horoszkóp (yantrával)-Még egy kis segitség az álom megfejtéséhez.")
+        title_label = QLabel("🕉️ Prashna Elemzés")
         title_label.setStyleSheet("font-size: 18px; font-weight: bold; color: #008080;")
         right_layout.addWidget(title_label)
 
+        # Létrehozunk egy új fülke-kezelőt a jobb oldali asztrológiai résznek
+        self.astro_tabs = QTabWidget()
+
+        # ─── 1. FÜL: HOROSZKÓP ÁBRA ───
+        chart_tab = QWidget()
+        chart_tab_layout = QVBoxLayout(chart_tab)
+        
         self.prashnaLabel = QLabel()
         self.prashnaLabel.setMinimumSize(400, 400)
         self.prashnaLabel.setAlignment(Qt.AlignCenter)
-        right_layout.addWidget(self.prashnaLabel)
+        chart_tab_layout.addWidget(self.prashnaLabel)
+        
+        self.astro_tabs.addTab(chart_tab, "📊 Prashna Horoszkóp")
 
+        # ─── 2. FÜL: TITHI YANTRA ───
+        yantra_tab = QWidget()
+        yantra_tab_layout = QVBoxLayout(yantra_tab)
+        
+        self.yantra_label = QLabel("A Yantra az elemzés után itt fog megjelenni")
+        self.yantra_label.setAlignment(Qt.AlignCenter)
+        # Gyönyörű sárgás háttér, ami illik a horoszkóphoz
+        self.yantra_label.setStyleSheet("background-color: #FFA500; border: 3px solid green; padding: 10px; font-weight: bold;")
+        yantra_tab_layout.addWidget(self.yantra_label)
+        
+        self.astro_tabs.addTab(yantra_tab, "🔮 Tithi Yantra")
+
+        # Hozzáadjuk a füleket a jobb oldali fő layout-hoz
+        right_layout.addWidget(self.astro_tabs)
+        
+        # Tithi leírás és Koordináta gomb az ablak alján maradnak stabilan
         self.tithiLabel = QLabel()
         self.tithiLabel.setStyleSheet("font-size: 14px; color: #333333;")
         self.tithiLabel.setWordWrap(True)
@@ -128,9 +152,9 @@ class DreammyWidget(QWidget):
         splitter.addWidget(left_widget)
         splitter.addWidget(right_widget)
 
-        # Eseménykezelők bekötése
-        self.saveButton.clicked.connect(self.save_and_analyze)
+       # Eseménykezelők bekötése
         self.coordButton.clicked.connect(self.show_coord_panel)
+        self.saveButton.clicked.connect(self.save_and_analyze)  # <-- EZ HIÁNYZOTT!
         
     def get_output_folder(self):
         downloads = os.path.join(os.path.expanduser("~"), "Downloads")
@@ -235,14 +259,15 @@ class DreammyWidget(QWidget):
         if os.path.exists(png_ut):
             self.current_score_pixmap = QPixmap(png_ut)
             self.update_score_pixmap()
-
     def generate_prashna_chart(self):
+        import pendulum
+        from PyQt5.QtGui import QPixmap
+        from PyQt5.QtCore import Qt
+        from modulok import astro_core
+        from modulok import draw
+
         lat = getattr(self, "prashna_latitude", 46.8572)
         lon = getattr(self, "prashna_longitude", 18.1533)
-
-        import pendulum
-        from modulok import astro_core
-        from modulok.draw import rajzol_del_indiai_horoszkop
 
         now = pendulum.now("Europe/Budapest")
 
@@ -258,26 +283,47 @@ class DreammyWidget(QWidget):
             varga_label="D1 (Rashi)"
         )
 
-        if "tithi" in res and hasattr(self, 'tithiLabel'):
-            from modulok.tables import tithi_info
-            t_num = res["tithi"]
-            t_nev = tithi_info.get(t_num, {}).get("hu", "Ismeretlen Tithi")
-            t_leiras = tithi_info.get(t_num, {}).get("leiras", "")
-            self.tithiLabel.setText(f"<b>Tithi: {t_num} - {t_nev}</b><br/>{t_leiras}")
-
-        pixmap = rajzol_del_indiai_horoszkop(
+       # Horoszkóp generálása
+        svg_res, png_res = draw.rajzol_del_indiai_horoszkop(
             planet_data=res["planet_data"],
-            tithi=res.get("tithi", 1),
-            horoszkop_nev="D1",
-            is_prashna=True
+            tithi=res["tithi"],
+            horoszkop_nev=res["varga_code"]
         )
-
-        # 🎯 ITT VOLT A HIBA: Elmentjük a központi változóba és azonnal rárakjuk a felületre!
-        if pixmap:
-            self.current_prashna_pixmap = pixmap
+    
+        # A horoszkóp kép kirakása (Ez most már teljesen külön fut, fixen meg fog jelenni!)
+        if os.path.exists(png_res):
+            self.current_prashna_pixmap = QPixmap(png_res)
             self.update_prashna_pixmap()
+            print("✅ Horoszkóp sikeresen kirajzolva a felületre!")
 
-        return pixmap
+        # ─── YANTRA KÉP BETÖLTÉSE A KÜLÖN FÜLRE ───
+        raw_tithi = res.get("tithi", "13")
+        tithi_clean = str(raw_tithi).lower().strip()
+        tithi_szam = 13
+
+        if "trayodashi" in tithi_clean or "13" in tithi_clean: tithi_szam = 13
+        elif "chaturdashi" in tithi_clean or "14" in tithi_clean: tithi_szam = 14
+        elif "purnima" in tithi_clean or "15" in tithi_clean: tithi_szam = 15
+        elif "ekadashi" in tithi_clean or "11" in tithi_clean: tithi_szam = 11
+        elif "dvadashi" in tithi_clean or "12" in tithi_clean: tithi_szam = 12
+
+        # Lekérjük a yantra elérési útját a fixált funkcióval
+        yantra_fajl = astro_core.find_yantra_by_tithi(tithi_szam)
+        
+        if yantra_fajl and os.path.exists(yantra_fajl) and not os.path.isdir(yantra_fajl):
+            try:
+                yantra_pix = QPixmap(yantra_fajl)
+                if not yantra_pix.isNull():
+                    self.yantra_label.setPixmap(yantra_pix.scaled(550, 550, Qt.KeepAspectRatio, Qt.SmoothTransformation))
+                    self.yantra_label.setStyleSheet("background-color: #FFA500; border: 3px solid green; padding: 10px;")
+                    print(f"🔮 Yantra sikeresen kirakva a fülre: {yantra_fajl}")
+            except Exception as e:
+                print(f"❌ Nem sikerült betölteni a yantra pixmapot: {e}")
+        else:
+            print(f"⚠️ Yantra képfájl nem található az új útvonalon: {yantra_fajl}")
+            self.yantra_label.setStyleSheet("background-color: #FFA500; border: 3px solid red;")
+
+        return self.current_prashna_pixmap
     def update_prashna_pixmap(self):
         if not self.current_prashna_pixmap:
             return
@@ -363,4 +409,6 @@ class DreammyWidget(QWidget):
 
     def resizeEvent(self, event):
         super().resizeEvent(event)
-        self.update_prashna_pixmap()
+        # Kis késleltetéssel vagy közvetlenül frissítjük a pixmapot az aktuális mérethez igazítva
+        if self.current_prashna_pixmap:
+            self.update_prashna_pixmap()
