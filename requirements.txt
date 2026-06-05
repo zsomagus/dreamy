@@ -1,4 +1,4 @@
-Pyswisseph
+pyswisseph
 matplotlib
 pendulum
 pandas
@@ -6,3 +6,4 @@ countryinfo
 jyotishganit
 gspread
 requests
+st-files-connection

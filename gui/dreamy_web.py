@@ -80,48 +80,52 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 # =========================================================
-# GOOGLE SHEETS FUNKCIÓK
+# GOOGLE SHEETS FUNKCIÓK (TISZTA, JAVÍTOTT VERZIÓ)
 # =========================================================
 
-def get_google_sheet():
-    """Összekapcsolódik a Google Táblázattal a Streamlit Secrets segítségével"""
+def load_dreams_from_sheets():
+    """Beolvassa az összes eddigi álmot a Google Táblázatból CSV-ként (hitelesítés nélkül)"""
+    try:
+        sheet_url = st.secrets["google_sheets"]["sheet_url"]
+        # Átalakítjuk a linket, hogy a Google egyből egy tiszta CSV fájlt adjon vissza
+        csv_url = sheet_url.replace("/edit?usp=sharing", "/export?format=csv").replace("/edit?gid=0#gid=0", "/export?format=csv")
+        df = pd.read_csv(csv_url)
+        # Átkonvertáljuk szótárak listájává, hogy a kód többi része ugyanúgy működjön
+        return df.to_dict(orient="records")
+    except Exception as e:
+        st.error(f"Nem sikerült beolvasni az online naplót: {e}")
+        return []
+
+def save_dream_to_sheets(date_str, mood, keywords, symbols, description):
+    """Új sort küld a Google Táblázatba a Streamlit hivatalos összekötőjével"""
     try:
         sheet_url = st.secrets["google_sheets"]["sheet_url"]
         
-        # A gspread kliens inicializálása API kulcs vagy fiók nélkül, 
-        # kifejezetten a "bárki szerkesztheti" linkekhez
-        gc = gspread.client.Client(auth=None)
+        # A Streamlit gyári Google Sheets kapcsolódását használjuk
+        from streamlit_gsheets import GSheetsConnection
+        conn = st.connection("gsheets", type=GSheetsConnection)
         
-        # Megnyitjuk a táblázatot a link alapján
-        sh = gc.open_by_url(sheet_url)
-        return sh.sheet1
+        # Beolvassuk a jelenlegi adatokat
+        df = conn.read(spreadsheet=sheet_url)
+        
+        # Hozzáadjuk az új sort
+        symbols_str = ", ".join(symbols) if isinstance(symbols, list) else str(symbols)
+        new_row = pd.DataFrame([{
+            "Dátum": date_str,
+            "Hangulat": mood,
+            "Kulcsszavak": keywords,
+            "Szimbolumok": symbols_str,
+            "Leírás": description
+        }])
+        
+        updated_df = pd.concat([df, new_row], ignore_index=True)
+        
+        # Visszaírjuk a frissített táblázatot a felhőbe
+        conn.update(spreadsheet=sheet_url, data=updated_df)
+        return True
     except Exception as e:
-        st.error(f"Nem sikerült kapcsolódni a Google Táblázathoz: {e}")
-        return None
-def load_dreams_from_sheets():
-    """Beolvassa az összes eddigi álmot a Google Táblázatból"""
-    sheet = get_google_sheet()
-    if sheet:
-        try:
-            records = sheet.get_all_records()
-            return records
-        except:
-            return []
-    return []
-
-def save_dream_to_sheets(date_str, mood, keywords, symbols, description):
-    """Új sort ad hozzá a Google Táblázathoz"""
-    sheet = get_google_sheet()
-    if sheet:
-        try:
-            symbols_str = ", ".join(symbols) if isinstance(symbols, list) else str(symbols)
-            sheet.append_row([date_str, mood, keywords, symbols_str, description])
-            return True
-        except Exception as e:
-            st.error(f"Hiba a mentés során: {e}")
-            return False
-    return False
-
+        st.error(f"Hiba a mentés során: {e}")
+        return False
 # =========================================================
 # SESSION STATE INITIALIZATION
 # =========================================================
