@@ -5,3 +5,4 @@ pandas
 countryinfo
 jyotishganit
 gspread
+request

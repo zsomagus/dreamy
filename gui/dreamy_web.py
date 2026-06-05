@@ -86,17 +86,18 @@ st.markdown("""
 def get_google_sheet():
     """Összekapcsolódik a Google Táblázattal a Streamlit Secrets segítségével"""
     try:
-        # A Streamlit Cloud felületén megadott URL-t használjuk
         sheet_url = st.secrets["google_sheets"]["sheet_url"]
-        # Anonim/Publikus szerkesztőként lépünk be, nem kell bonyolult json kulcsfájl
-        gc = gspread.oauth_from_dict({}) if hasattr(gspread, 'oauth_from_dict') else gspread.public()
+        
+        # A gspread kliens inicializálása API kulcs vagy fiók nélkül, 
+        # kifejezetten a "bárki szerkesztheti" linkekhez
+        gc = gspread.client.Client(auth=None)
+        
         # Megnyitjuk a táblázatot a link alapján
         sh = gc.open_by_url(sheet_url)
         return sh.sheet1
     except Exception as e:
         st.error(f"Nem sikerült kapcsolódni a Google Táblázathoz: {e}")
         return None
-
 def load_dreams_from_sheets():
     """Beolvassa az összes eddigi álmot a Google Táblázatból"""
     sheet = get_google_sheet()
