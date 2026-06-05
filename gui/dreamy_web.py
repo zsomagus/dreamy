@@ -200,7 +200,7 @@ def generate_prashna_chart(lat, lon):
     svg_res, png_res = draw.rajzol_del_indiai_horoszkop(
         planet_data=res["planet_data"], tithi=res["tithi"], horoszkop_nev=res["varga_code"]
     )
-   raw_tithi = str(res.get("tithi", "13")).lower()
+    raw_tithi = str(res.get("tithi", "13")).lower()
     
     # Kikeressük az összes számjegyet a szövegből (pl. "tithi 14" -> 14, vagy "sukla 3" -> 3)
     import re
