@@ -1,4 +1,13 @@
-streamlit
-pandas
+Pyswisseph
+matplotlib
 pendulum
-pillow
+pandas
+countryinfo
+datetime
+jyotishganit
+json
+os
+pyqt
+streamlit
+subprocess
+pathlib
