@@ -3,6 +3,13 @@
 # Futatás helyileg: streamlit run gui/dreamy_web.py --server.enableStaticServing True
 
 import os
+import sys
+
+# Megkeressük a gui mappa szülőmappáját (a projekt gyökerét)
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+if BASE_DIR not in sys.path:
+    sys.path.insert(0, BASE_DIR)
+import os
 import json
 import pendulum
 import streamlit as st
