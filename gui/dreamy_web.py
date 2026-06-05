@@ -1,7 +1,3 @@
-# app.py
-# 🌙 Dreamy Widget - Streamlit Cloud Edition
-# Futatás helyileg: streamlit run gui/dreamy_web.py --server.enableStaticServing True
-
 import os
 import sys
 
@@ -9,11 +5,12 @@ import sys
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 if BASE_DIR not in sys.path:
     sys.path.insert(0, BASE_DIR)
-import os
+
 import json
 import pendulum
 import streamlit as st
 import pandas as pd
+import gspread
 
 from modulok import astro_core
 from modulok import draw
@@ -33,11 +30,11 @@ st.set_page_config(
 
 # PWA Regisztráció
 pwa_html = """
-<link rel="manifest" href="/static/manifest.json">
+<link rel="manifest" href="static/manifest.json">
 <script>
   if ('serviceWorker' in navigator) {
     window.addEventListener('load', function() {
-      navigator.serviceWorker.register('/static/service_worker.js')
+      navigator.serviceWorker.register('static/service_worker.js')
         .then(function(reg) { console.log('Service Worker sikeresen regisztrálva!', reg); })
         .catch(function(err) { console.error('Service Worker regisztrációs hiba:', err); });
     });
@@ -83,11 +80,50 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 # =========================================================
-# SESSION STATE & ADATKEZELÉS
+# GOOGLE SHEETS FUNKCIÓK
 # =========================================================
 
-if "dream_log" not in st.session_state:
-    st.session_state.dream_log = []
+def get_google_sheet():
+    """Összekapcsolódik a Google Táblázattal a Streamlit Secrets segítségével"""
+    try:
+        # A Streamlit Cloud felületén megadott URL-t használjuk
+        sheet_url = st.secrets["google_sheets"]["sheet_url"]
+        # Anonim/Publikus szerkesztőként lépünk be, nem kell bonyolult json kulcsfájl
+        gc = gspread.oauth_from_dict({}) if hasattr(gspread, 'oauth_from_dict') else gspread.public()
+        # Megnyitjuk a táblázatot a link alapján
+        sh = gc.open_by_url(sheet_url)
+        return sh.sheet1
+    except Exception as e:
+        st.error(f"Nem sikerült kapcsolódni a Google Táblázathoz: {e}")
+        return None
+
+def load_dreams_from_sheets():
+    """Beolvassa az összes eddigi álmot a Google Táblázatból"""
+    sheet = get_google_sheet()
+    if sheet:
+        try:
+            records = sheet.get_all_records()
+            return records
+        except:
+            return []
+    return []
+
+def save_dream_to_sheets(date_str, mood, keywords, symbols, description):
+    """Új sort ad hozzá a Google Táblázathoz"""
+    sheet = get_google_sheet()
+    if sheet:
+        try:
+            symbols_str = ", ".join(symbols) if isinstance(symbols, list) else str(symbols)
+            sheet.append_row([date_str, mood, keywords, symbols_str, description])
+            return True
+        except Exception as e:
+            st.error(f"Hiba a mentés során: {e}")
+            return False
+    return False
+
+# =========================================================
+# SESSION STATE INITIALIZATION
+# =========================================================
 
 if "analysis_text" not in st.session_state:
     st.session_state.analysis_text = ""
@@ -101,21 +137,18 @@ if "chart_path" not in st.session_state:
 if "yantra_path" not in st.session_state:
     st.session_state.yantra_path = None
 
+# Minden indításkor vagy frissítéskor frissítjük az álmok listáját a felhőből
+st.session_state.dream_log = load_dreams_from_sheets()
+
 # =========================================================
-# LOAD DREAM DICTIONARY (Gyorsítótárazva a felhőhöz)
+# LOAD DREAM DICTIONARY
 # =========================================================
 
 @st.cache_data
 def cached_szotar_betoltes(path):
     return load_alomszotar(path)
 
-BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 ALOMSZOTAR_PATH = os.path.join(BASE_DIR, "alomszotar.json")
-
-if not os.path.exists(ALOMSZOTAR_PATH):
-    # Ha a gui mappában vagyunk, egyel feljebb nézzük
-    ALOMSZOTAR_PATH = os.path.join(os.path.dirname(BASE_DIR), "alomszotar.json")
-
 try:
     SZOTAR = cached_szotar_betoltes(ALOMSZOTAR_PATH)
 except:
@@ -182,7 +215,7 @@ def generate_prashna_chart(lat, lon):
 # =========================================================
 
 st.title("🌙 Dreamy Widget")
-st.caption("Álomnapló • AI Prompt • Prashna • Yantra")
+st.caption("Automata Felhős Álomnapló • AI Prompt • Prashna • Yantra")
 
 # =========================================================
 # LAYOUT
@@ -215,15 +248,14 @@ with left_col:
             prompt = build_music_prompt(dream_text, mood, keywords, szimbolumok)
             st.session_state.music_prompt = prompt
             now = pendulum.now("Europe/Budapest")
+            date_str = now.format("YYYY-MM-DD HH:mm")
 
-            entry = {
-                "Dátum": now.format("YYYY-MM-DD HH:mm"),
-                "Hangulat": mood,
-                "Kulcsszavak": keywords,
-                "Szimbolumok": szimbolumok,
-                "Leírás": dream_text
-            }
-            st.session_state.dream_log.append(entry)
+            # Mentés a Google Felhőbe
+            with st.spinner("Álom mentése a felhőbe..."):
+                if save_dream_to_sheets(date_str, mood, keywords, szimbolumok, dream_text):
+                    st.success("🎯 Az álom sikeresen elmentve az online naplóba!")
+                    # Frissítjük a helyi listát is, hogy azonnal látszódjon a táblázatban
+                    st.session_state.dream_log = load_dreams_from_sheets()
 
             try:
                 chart_path, yantra_path = generate_prashna_chart(lat, lon)
@@ -243,7 +275,7 @@ with left_col:
 # =========================================================
 
 with right_col:
-    tabs = st.tabs(["📊 Prashna", "🔮 Yantra", "📜 Napló Fájlkezelő"])
+    tabs = st.tabs(["📊 Prashna", "🔮 Yantra", "📜 Online Napló"])
 
     # PRASHNA
     with tabs[0]:
@@ -259,37 +291,14 @@ with right_col:
         else:
             st.info("Még nincs yantra.")
 
-    # B VARIÁCIÓS ADATKEZELŐ (NAPLÓ)
+    # ONLINE NAPLÓ MEGJELENÍTÉSE
     with tabs[2]:
-        st.subheader("💾 Biztonsági mentés és szinkronizálás")
-        
-        # 1. LETÖLTÉS (Már meglévő adatok kimentése)
-        json_string = json.dumps(st.session_state.dream_log, ensure_ascii=False, indent=2)
-        st.download_button(
-            label="⬇️ Napló letöltése (.json)",
-            data=json_string,
-            file_name="dream_log.json",
-            mime="application/json"
-        )
-        
-        st.write("---")
-        
-        # 2. FELTÖLTÉS (Már elmentett napló visszatöltése a felhőbe)
-        uploaded_file = st.file_uploader("📂 Korábbi napló (.json) betöltése", type=["json"])
-        if uploaded_file is not None:
-            try:
-                st.session_state.dream_log = json.load(uploaded_file)
-                st.success("🎯 Napló sikeresen betöltve a fájlból!")
-            except Exception as e:
-                st.error(f"Hiba a fájl beolvasásakor: {e}")
-
-        st.write("---")
-        st.subheader("📜 Aktuális álmok")
+        st.subheader("📜 Mentett álmok a Google Táblázatból")
         
         if st.session_state.dream_log:
-            df = pd.DataFrame(list(reversed(st.session_state.dream_log)))
-            if "Szimbolumok" in df.columns:
-                df["Szimbolumok"] = df["Szimbolumok"].apply(lambda x: ", ".join(x) if isinstance(x, list) else str(x))
+            df = pd.DataFrame(st.session_state.dream_log)
+            # Megfordítjuk a sorrendet, hogy a legfrissebb álom legyen legfelül
+            df = df.iloc[::-1]
             st.dataframe(df, width="stretch")
         else:
-            st.info("Még nincs mentett álom ebben a munkamenetben. Töltsd be a fájlodat vagy írj egy újat!")
+            st.info("Az online napló még üres. Írd meg az első álmodat!")
