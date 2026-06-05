@@ -200,16 +200,19 @@ def generate_prashna_chart(lat, lon):
     svg_res, png_res = draw.rajzol_del_indiai_horoszkop(
         planet_data=res["planet_data"], tithi=res["tithi"], horoszkop_nev=res["varga_code"]
     )
-    raw_tithi = str(res.get("tithi", "13")).lower()
-    tithi_szam = 13
-    if "14" in raw_tithi: tithi_szam = 14
-    elif "15" in raw_tithi: tithi_szam = 15
-    elif "11" in raw_tithi: tithi_szam = 11
-    elif "12" in raw_tithi: tithi_szam = 12
-
+   raw_tithi = str(res.get("tithi", "13")).lower()
+    
+    # Kikeressük az összes számjegyet a szövegből (pl. "tithi 14" -> 14, vagy "sukla 3" -> 3)
+    import re
+    szamok = re.findall(r'\d+', raw_tithi)
+    
+    if szamok:
+        tithi_szam = int(szamok[0])
+    else:
+        tithi_szam = 0  # Biztonsági tartalék, ha a szövegben egyáltalán nincs szám
+        
     yantra = astro_core.find_yantra_by_tithi(tithi_szam)
     return png_res, yantra
-
 # =========================================================
 # HEADER
 # =========================================================
