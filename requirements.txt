@@ -7,3 +7,4 @@ jyotishganit
 gspread
 requests
 st-files-connection
+streamlit-gsheets
