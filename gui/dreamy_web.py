@@ -99,8 +99,31 @@ def load_dreams_from_sheets():
 def save_dream_to_sheets(date_str, mood, keywords, symbols, description):
     """Új sort küld a Google Táblázatba a feleséged Google Formjának háttér-kitöltésével"""
     try:
-        # A te egyedi Google Form beküldési végpontod
-        form_url = "https://docs.google.com/forms/d/e/1FAIpQLSciR5t79gXf-xGgYvD
+        # A te egyedi Google Form beküldési végpontod (teljes, lezárt URL)
+        form_url = "https://docs.google.com/forms/d/e/1FAIpQLSciR5t79gXf-xGgYvDQid2y_9p023ZlB7P4mFpMstfQvK0Mhg/formResponse"
+        
+        # A te űrlapod pontos mezőkódjai
+        form_data = {
+            "entry.279603099": date_str,      # Dátum
+            "entry.1741753733": mood,         # Hangulat
+            "entry.1221762114": keywords,     # Kulcsszavak
+            "entry.1491754406": ", ".join(symbols) if isinstance(symbols, list) else str(symbols),  # Szimbólumok
+            "entry.226922336": description    # Leírás
+        }
+        
+        # Elküldjük a kérést a Google-nek, mintha kitöltötték volna az űrlapot
+        response = requests.post(form_url, data=form_data)
+        
+        # Ha a Google állapota 200 (OK), a mentés sikeres volt
+        if response.status_code == 200:
+            return True
+        else:
+            st.error(f"Szerver hiba a mentésnél: {response.status_code}")
+            return False
+            
+    except Exception as e:
+        st.error(f"Hiba a mentés során: {e}")
+        return False
 
 # =========================================================
 # LOAD DREAM DICTIONARY
