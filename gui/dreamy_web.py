@@ -97,53 +97,10 @@ def load_dreams_from_sheets():
         return []
 
 def save_dream_to_sheets(date_str, mood, keywords, symbols, description):
-    """Új sort küld a Google Táblázatba a Streamlit hivatalos összekötőjével"""
+    """Új sort küld a Google Táblázatba a feleséged Google Formjának háttér-kitöltésével"""
     try:
-        sheet_url = st.secrets["google_sheets"]["sheet_url"]
-        
-        # A Streamlit gyári Google Sheets kapcsolódását használjuk
-        from streamlit_gsheets import GSheetsConnection
-        conn = st.connection("gsheets", type=GSheetsConnection)
-        
-        # Beolvassuk a jelenlegi adatokat
-        df = conn.read(spreadsheet=sheet_url)
-        
-        # Hozzáadjuk az új sort
-        symbols_str = ", ".join(symbols) if isinstance(symbols, list) else str(symbols)
-        new_row = pd.DataFrame([{
-            "Dátum": date_str,
-            "Hangulat": mood,
-            "Kulcsszavak": keywords,
-            "Szimbolumok": symbols_str,
-            "Leírás": description
-        }])
-        
-        updated_df = pd.concat([df, new_row], ignore_index=True)
-        
-        # Visszaírjuk a frissített táblázatot a felhőbe
-        conn.update(spreadsheet=sheet_url, data=updated_df)
-        return True
-    except Exception as e:
-        st.error(f"Hiba a mentés során: {e}")
-        return False
-# =========================================================
-# SESSION STATE INITIALIZATION
-# =========================================================
-
-if "analysis_text" not in st.session_state:
-    st.session_state.analysis_text = ""
-
-if "music_prompt" not in st.session_state:
-    st.session_state.music_prompt = ""
-
-if "chart_path" not in st.session_state:
-    st.session_state.chart_path = None
-
-if "yantra_path" not in st.session_state:
-    st.session_state.yantra_path = None
-
-# Minden indításkor vagy frissítéskor frissítjük az álmok listáját a felhőből
-st.session_state.dream_log = load_dreams_from_sheets()
+        # A te egyedi Google Form beküldési végpontod
+        form_url = "https://docs.google.com/forms/d/e/1FAIpQLSciR5t79gXf-xGgYvD
 
 # =========================================================
 # LOAD DREAM DICTIONARY
