@@ -128,12 +128,13 @@ def save_dream_to_sheets(date_str, mood, keywords, symbols, description):
         form_url = "https://docs.google.com/forms/d/e/1FAIpQLSfnbGuNsXCFQNofdmwze7N6iJPWTrla1elXmvjugI7ZCEUv4g/formResponse"
         
         # A te jelenlegi űrlapod 100%-ig pontos mezőkódjai
+        # Biztonságos szöveggé alakítás, hogy a Google Form biztosan elfogadja
         form_data = {
-            "entry.331295964": date_str,      # Dátum
-            "entry.972304190": mood,          # Hangulat
-            "entry.1741541819": keywords,     # Kulcsszavak
-            "entry.2062635293": ", ".join(symbols) if isinstance(symbols, list) else str(symbols),  # Szimbólumok
-            "entry.1118120612": description    # Leírás
+            "entry.331295964": str(date_str),
+            "entry.972304190": str(mood),
+            "entry.1741541819": str(keywords),
+            "entry.2062635293": str(", ".join(symbols) if isinstance(symbols, list) else symbols),
+            "entry.1118120612": str(description)
         }
         
         # Elküldjük a kérést a Google-nek
