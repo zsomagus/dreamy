@@ -174,7 +174,6 @@ def save_dream_to_sheets(date_str, mood, keywords, symbols, description):
         # Tisztítjuk a szimbólumokat
         tisztitott_szimbolumok = ", ".join(symbols) if isinstance(symbols, list) else str(symbols)
         
-        # Az adatok, amiket be kell préselni a Google oszlopaiba
 # Teljesen kihagyjuk a dátumot, mert az Időbélyeg automatikusan létrejön!
         form_data = {
             "entry.848467000": str(mood).strip(),                  # Hangulat
@@ -200,11 +199,11 @@ def save_dream_to_sheets(date_str, mood, keywords, symbols, description):
 def cached_szotar_betoltes(path):
     return load_alomszotar(path)
 
-ALOMSZOTAR_PATH = os.path.join(BASE_DIR, "alomszotar.json")
-try:
-    SZOTAR = cached_szotar_betoltes(ALOMSZOTAR_PATH)
-except:
-    SZOTAR = {"alomszotar": []}
+    ALOMSZOTAR_PATH = os.path.join(BASE_DIR, "alomszotar.json")
+    try:
+        SZOTAR = cached_szotar_betoltes(ALOMSZOTAR_PATH)
+    except:
+        SZOTAR = {"alomszotar": []}
 
 # =========================================================
 # HELPERS
