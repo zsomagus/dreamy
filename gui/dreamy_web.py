@@ -175,36 +175,40 @@ def save_dream_to_sheets(date_str, mood, keywords, symbols, description):
         tisztitott_szimbolumok = ", ".join(symbols) if isinstance(symbols, list) else str(symbols)
         
         # Az adatok, amiket be kell préselni a Google oszlopaiba
-   # 1. LÉPÉS: Dátum előkészítése és darabolása
+# 1. LÉPÉS: Dátum formázása
         tiszta_datum = str(date_str).replace('.', '-').strip()
         darabolt_datum = tiszta_datum.split('-')
-        
-        ev = darabolt_datum[0]
-        honap = darabolt_datum[1]
-        nap = darabolt_datum[2]
+        ev, honap, nap = darabolt_datum[0], darabolt_datum[1], darabolt_datum[2]
 
-        # 2. LÉPÉS: Az adatcsomag összeállítása (biztonsági duplázással a dátumnál)
+        # 2. LÉPÉS: Teljes, hivatalos Google Form adatcsomag a rejtett rendszer-paraméterekkel
         form_data = {
-            # Ha összetett dátummezőként várja:
+            # Google Form kötelező rejtett ellenőrző mezői (ezek nélkül eldobja az adatokat!)
+            "fvv": "1",
+            "pageHistory": "0",
+            "draftResponse": "[]",
+            
+            # A Dátum mező struktúrája (Mindkét formátumban elküldjük, hogy biztosan bevigye)
             "entry.1780751080_year": str(ev).strip(),
             "entry.1780751080_month": str(honap).strip(),
             "entry.1780751080_day": str(nap).strip(),
-            # Biztonsági fallback, ha sima szövegmezőként interpretálná:
             "entry.1780751080": tiszta_datum,
             
-            # Szöveges beviteli mezők az élő űrlap azonosítói alapján
+            # A te élő űrlapod pontos adatmezői
             "entry.848467000": str(mood).strip(),                  # Hangulat
             "entry.45759550": str(keywords).strip(),               # Kulcsszavak
             "entry.45765567": str(tisztitott_szimbolumok).strip(), # Szimbólum
             "entry.45755088": str(description).strip()              # Leírás
         }
 
-        # 3. LÉPÉS: A HTTP Fejléc (Header) definiálása, ami kötelezővé teszi az űrlap-formátumot
+        # 3. LÉPÉS: Küldés böngészőnek álcázott User-Agent-tel
+        # Ha a Google azt látja, hogy Python szkript küldi, néha letiltja a mezőket. 
+        # Ezzel a headerrel azt hiszi, egy sima Chrome böngészőből jön az adat.
         headers = {
-            "Content-Type": "application/x-www-form-urlencoded"
+            "Content-Type": "application/x-www-form-urlencoded",
+            "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
         }
 
-        # 4. LÉPÉS: Küldés végrehajtása a fejléccel együtt
+        # 4. LÉPÉS: POST kérés elküldése
         response = requests.post(form_url, data=form_data, headers=headers)
         # BÖNGÉSZŐ ÁLCA: Ezzel elhitetjük a Google-lel, hogy egy rendes Chrome böngésző küldi az adatot
         headers = {
