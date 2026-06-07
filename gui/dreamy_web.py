@@ -112,10 +112,12 @@ def load_dreams_from_sheets():
     """Beolvassa az összes eddigi álmot a Google Táblázatból CSV-ként (hitelesítés nélkül)"""
     try:
         sheet_url = st.secrets["google_sheets"]["sheet_url"]
-        # Átalakítjuk a linket, hogy a Google egyből egy tiszta CSV fájlt adjon vissza
-        csv_url = sheet_url.replace("/edit?usp=sharing", "/export?format=csv").replace("/edit?gid=0#gid=0", "/export?format=csv")
+        
+        # Levágjuk a link végéről a felesleges gid és szerkesztési sallangokat
+        base_url = sheet_url.split("/edit")[0]
+        csv_url = f"{base_url}/export?format=csv"
+        
         df = pd.read_csv(csv_url)
-        # Átkonvertáljuk szótárak listájává, hogy a kód többi része ugyanúgy működjön
         return df.to_dict(orient="records")
     except Exception as e:
         st.error(f"Nem sikerült beolvasni az online naplót: {e}")
