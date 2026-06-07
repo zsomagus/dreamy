@@ -125,7 +125,7 @@ def save_dream_to_sheets(date_str, mood, keywords, symbols, description):
     """Új sort küld a Google Táblázatba a feleséged Google Formjának háttér-kitöltésével"""
     try:
         # A te egyedi Google Form beküldési végpontod (teljes, lezárt URL)
-        form_url = "https://docs.google.com/forms/d/e/1FAIpQLSciR5t79gXf-xGgYvDQid2y_9p023ZlB7P4mFpMstfQvK0Mhg/formResponse"
+        form_url = "https://docs.google.com/forms/d/1FAIpQLSciR5t79gXf-xGgYvDQid2y_9p023ZlB7P4mFpMstfQvK0Mhg/formResponse"
         
         # A te űrlapod pontos mezőkódjai
         form_data = {
