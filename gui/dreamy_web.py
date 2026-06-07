@@ -175,9 +175,19 @@ def save_dream_to_sheets(date_str, mood, keywords, symbols, description):
         tisztitott_szimbolumok = ", ".join(symbols) if isinstance(symbols, list) else str(symbols)
         
         # Az adatok, amiket be kell préselni a Google oszlopaiba
-       # Az adatok a Google Form VALÓDI mezőazonosítóival (Frissítve a forráskód alapján!)
+      # A dátum felbontása évre, hónapra, napra a Google Form dátummezőjének megfelelően
+        # Feltételezzük, hogy a date_str formátuma "YYYY-MM-DD" vagy "YYYY.MM.DD"
+        tiszta_datum = str(date_str).replace('.', '-').strip()
+        ev, honap, nap = tiszta_datum.split('-')[0], tiszta_datum.split('-')[1], tiszta_datum.split('-')[2]
+
+        # HAJSZÁLPONTOS FORM ADATOK A FORRÁSKÓD ALAPJÁN
         form_data = {
-            "entry.1780751080": str(date_str).strip(),
+            # A Google Dátum mező speciális al-azonosítói (év, hónap, nap)
+            "entry.1780751080_year": str(ev).strip(),
+            "entry.1780751080_month": str(honap).strip(),
+            "entry.1780751080_day": str(nap).strip(),
+            
+            # A többi normál szöveges mező
             "entry.848467000": str(mood).strip(),
             "entry.45759550": str(keywords).strip(),
             "entry.45765567": str(tisztitott_szimbolumok).strip(),
