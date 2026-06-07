@@ -124,7 +124,7 @@ def load_dreams_from_sheets():
         # Megnézzük, mi a Google Táblázat valódi oszlopneve, és lefordítjuk a kód nyelvére
         mapping = {}
         if "Időbélyeg" in df.columns: mapping["Időbélyeg"] = "Időbélyeg"
-        if "Dátum" in df.columns: mapping["Dátum"] = "Dátum"
+      #  if "Dátum" in df.columns: mapping["Dátum"] = "Dátum"
         if "Hangulat" in df.columns: mapping["Hangulat"] = "Hangulat"
         if "Kulcsszavak" in df.columns: mapping["Kulcsszavak"] = "Kulcsszavak"
         if "Szimbólum" in df.columns: mapping["Szimbólum"] = "Szimbólum"
@@ -134,7 +134,7 @@ def load_dreams_from_sheets():
         # akkor ezt a biztonsági másolatot használjuk, hogy mindkét irányba működjön:
         renamed_df = df.rename(columns={
             "Időbélyeg": "timestamp",
-            "Dátum": "date",
+     #       "Dátum": "date",
             "Hangulat": "mood",
             "Kulcsszavak": "keywords",
             "Szimbólum": "symbols",
@@ -183,14 +183,14 @@ def save_dream_to_sheets(date_str, mood, keywords, symbols, description):
         }
 
         # Küldés mindenféle extra zavaró fejléc nélkül
-    try:
-        response = requests.post(form_url, data=form_data)
-        if response.status_code == 200:
-            st.success("Az álom sikeresen elmentve az online naplóba!")
-        else:
-            st.error(f"Hiba a Google szerverén: {response.status_code}")
-    except Exception as e:
-            st.error(f"Hiba történt a küldés során: {e}")
+        try:
+            response = requests.post(form_url, data=form_data)
+            if response.status_code == 200:
+                st.success("Az álom sikeresen elmentve az online naplóba!")
+            else:
+                st.error(f"Hiba a Google szerverén: {response.status_code}")
+        except Exception as e:
+                st.error(f"Hiba történt a küldés során: {e}")
 # =========================================================
 # LOAD DREAM DICTIONARY
 # =========================================================
@@ -221,7 +221,7 @@ def analyze_dream(text, keywords):
     szimbolumok = []
     szavak = [s.strip().lower() for s in text.split() if len(s.strip()) > 2]
     szavak_tovei = [levag_ragokat(s) for s in szavak]
-    egyedi_kulcsszavak = [k.strip().lower() for k in keywords.split(",") if k.strip()]
+    egyedi_kulcsszavak = [k.strip().lower() for k in keywords.split(",") if k.strip()]i
     minden = list(set(szavak_tovei + egyedi_kulcsszavak))
 
     for szo in minden:
