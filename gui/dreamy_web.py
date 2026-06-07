@@ -124,23 +124,31 @@ def load_dreams_from_sheets():
         return []
 
 def save_dream_to_sheets(date_str, mood, keywords, symbols, description):
-    """Új sort küld a Google Táblázatba tiszta szövegként kényszerítve"""
+    """Új sort küld a Google Táblázatba böngésző álcázással (Headers)"""
     try:
         form_url = "https://docs.google.com/forms/d/e/1FAIpQLSfnbGuNsXCFQNofdmwze7N6iJPWTrla1elXmvjugI7ZCEUv4g/formResponse"
         
-        # Mindent kényszerítünk, hogy sima szöveg (str) legyen, semmi lista vagy objektum
+        # Tisztítjuk a szimbólumokat
         tisztitott_szimbolumok = ", ".join(symbols) if isinstance(symbols, list) else str(symbols)
         
+        # Az adatok, amiket be kell préselni a Google oszlopaiba
+       # Az adatok a Google Form VALÓDI mezőazonosítóival (Frissítve a forráskód alapján!)
         form_data = {
-            "entry.331295964": str(date_str),
-            "entry.972304190": str(mood),
-            "entry.1741541819": str(keywords),
-            "entry.2062635293": str(tisztitott_szimbolumok),
-            "entry.1118120612": str(description)
+            "entry.1780751080": str(date_str).strip(),
+            "entry.848467000": str(mood).strip(),
+            "entry.45759550": str(keywords).strip(),
+            "entry.45765567": str(tisztitott_szimbolumok).strip(),
+            "entry.45755088": str(description).strip()
         }
         
-        # Elküldjük a kérést
-        response = requests.post(form_url, data=form_data)
+        # BÖNGÉSZŐ ÁLCA: Ezzel elhitetjük a Google-lel, hogy egy rendes Chrome böngésző küldi az adatot
+        headers = {
+            "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
+            "Content-Type": "application/x-www-form-urlencoded"
+        }
+        
+        # Elküldjük a kérést az álcázással együtt
+        response = requests.post(form_url, data=form_data, headers=headers)
         
         if response.status_code == 200:
             return True
