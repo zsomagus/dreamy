@@ -175,8 +175,7 @@ def save_dream_to_sheets(date_str, mood, keywords, symbols, description):
         tisztitott_szimbolumok = ", ".join(symbols) if isinstance(symbols, list) else str(symbols)
         
         # Az adatok, amiket be kell préselni a Google oszlopaiba
-    # 1. LÉPÉS: A dátum string felbontása (Év, Hónap, Nap) a Google Form formátumához
-        # Elvárás: YYYY-MM-DD formátum
+   # 1. LÉPÉS: Dátum előkészítése és darabolása
         tiszta_datum = str(date_str).replace('.', '-').strip()
         darabolt_datum = tiszta_datum.split('-')
         
@@ -184,23 +183,29 @@ def save_dream_to_sheets(date_str, mood, keywords, symbols, description):
         honap = darabolt_datum[1]
         nap = darabolt_datum[2]
 
-        # 2. LÉPÉS: Az adatcsomag összeállítása a hivatalos entry azonosítókkal
+        # 2. LÉPÉS: Az adatcsomag összeállítása (biztonsági duplázással a dátumnál)
         form_data = {
-            # A 0-s indexű Dátum mező speciális bontása
+            # Ha összetett dátummezőként várja:
             "entry.1780751080_year": str(ev).strip(),
             "entry.1780751080_month": str(honap).strip(),
             "entry.1780751080_day": str(nap).strip(),
+            # Biztonsági fallback, ha sima szövegmezőként interpretálná:
+            "entry.1780751080": tiszta_datum,
             
-            # Az 1-es, 2-es, 3-as és 4-es indexű szöveges mezők
-            "entry.848467000": str(mood).strip(),                  # Hangulat (Index 1)
-            "entry.45759550": str(keywords).strip(),               # Kulcsszavak (Index 2)
-            "entry.45765567": str(tisztitott_szimbolumok).strip(), # Szimbólum (Index 3)
-            "entry.45755088": str(description).strip()              # Leírás (Index 4)
+            # Szöveges beviteli mezők az élő űrlap azonosítói alapján
+            "entry.848467000": str(mood).strip(),                  # Hangulat
+            "entry.45759550": str(keywords).strip(),               # Kulcsszavak
+            "entry.45765567": str(tisztitott_szimbolumok).strip(), # Szimbólum
+            "entry.45755088": str(description).strip()              # Leírás
         }
 
-        # 3. LÉPÉS: Küldés POST kéréssel, kötelezően standard űrlapként (data=)
-        response = requests.post(form_url, data=form_data)
-        
+        # 3. LÉPÉS: A HTTP Fejléc (Header) definiálása, ami kötelezővé teszi az űrlap-formátumot
+        headers = {
+            "Content-Type": "application/x-www-form-urlencoded"
+        }
+
+        # 4. LÉPÉS: Küldés végrehajtása a fejléccel együtt
+        response = requests.post(form_url, data=form_data, headers=headers)
         # BÖNGÉSZŐ ÁLCA: Ezzel elhitetjük a Google-lel, hogy egy rendes Chrome böngésző küldi az adatot
         headers = {
             "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
