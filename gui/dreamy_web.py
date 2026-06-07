@@ -183,13 +183,13 @@ def save_dream_to_sheets(date_str, mood, keywords, symbols, description):
         }
 
         # Küldés mindenféle extra zavaró fejléc nélkül
-        try:
-            response = requests.post(form_url, data=form_data)
-            if response.status_code == 200:
-                st.success("Az álom sikeresen elmentve az online naplóba!")
-            else:
-                st.error(f"Hiba a Google szerverén: {response.status_code}")
-        except Exception as e:
+    try:
+        response = requests.post(form_url, data=form_data)
+        if response.status_code == 200:
+            st.success("Az álom sikeresen elmentve az online naplóba!")
+        else:
+            st.error(f"Hiba a Google szerverén: {response.status_code}")
+    except Exception as e:
             st.error(f"Hiba történt a küldés során: {e}")
 # =========================================================
 # LOAD DREAM DICTIONARY
