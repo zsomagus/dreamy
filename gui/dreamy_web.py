@@ -195,7 +195,7 @@ def save_dream_to_sheets(date_str, mood, keywords, symbols, description):
 # LOAD DREAM DICTIONARY
 # =========================================================
 
-@st.cache_data
+    @st.cache_data
 def cached_szotar_betoltes(path):
     return load_alomszotar(path)
 
