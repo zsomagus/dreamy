@@ -175,35 +175,15 @@ def save_dream_to_sheets(date_str, mood, keywords, symbols, description):
         tisztitott_szimbolumok = ", ".join(symbols) if isinstance(symbols, list) else str(symbols)
         
         # Az adatok, amiket be kell préselni a Google oszlopaiba
-# 1. LÉPÉS: Típusbiztos dátumkezelés és darabolás
-        import datetime
-        if isinstance(date_str, (datetime.date, datetime.datetime)):
-            v_ev = str(date_str.year)
-            v_honap = str(date_str.month)
-            v_nap = str(date_str.day)
-        else:
-            # Ha szövegként jönne: YYYY-MM-DD
-            tiszta_dt = str(date_str).replace('.', '-').replace('/', '-').strip()
-            reszek = tiszta_dt.split('-')
-            v_ev = reszek[0]
-            v_honap = reszek[1]
-            v_nap = reszek[2]
-
-        # 2. LÉPÉS: A Google Form által elvárt pontos mezőstruktúra
+# Teljesen kihagyjuk a dátumot, mert az Időbélyeg automatikusan létrejön!
         form_data = {
-            # A dátumot darabokban VÁRJA a Google, ha hivatalos dátum mezőt használsz!
-            "entry.1780751080_year": str(v_ev).strip(),
-            "entry.1780751080_month": str(v_honap).strip(),
-            "entry.1780751080_day": str(v_nap).strip(),
-            
-            # A többi normál szöveges mező az élő űrlap alapján
             "entry.848467000": str(mood).strip(),                  # Hangulat
             "entry.45759550": str(keywords).strip(),               # Kulcsszavak
             "entry.45765567": str(tisztitott_szimbolumok).strip(), # Szimbólum
             "entry.45755088": str(description).strip()              # Leírás
         }
 
-        # 3. LÉPÉS: Tisztán, csak az adatok küldése (minden extra header nélkül, hogy ne akadjon fenn a szűrőn)
+        # Küldés mindenféle extra zavaró fejléc nélkül
         try:
             response = requests.post(form_url, data=form_data)
             if response.status_code == 200:
@@ -211,25 +191,7 @@ def save_dream_to_sheets(date_str, mood, keywords, symbols, description):
             else:
                 st.error(f"Hiba a Google szerverén: {response.status_code}")
         except Exception as e:
-            st.error(f"Hiba történt: {e}")
-        # BÖNGÉSZŐ ÁLCA: Ezzel elhitetjük a Google-lel, hogy egy rendes Chrome böngésző küldi az adatot
-        headers = {
-            "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
-            "Content-Type": "application/x-www-form-urlencoded"
-        }
-        
-        # Elküldjük a kérést az álcázással együtt
-        response = requests.post(form_url, data=form_data, headers=headers)
-        
-        if response.status_code == 200:
-            return True
-        else:
-            st.error(f"Szerver hiba a mentésnél: {response.status_code}")
-            return False
-            
-    except Exception as e:
-        st.error(f"Hiba a mentés során: {e}")
-        return False
+            st.error(f"Hiba történt a küldés során: {e}")
 # =========================================================
 # LOAD DREAM DICTIONARY
 # =========================================================
