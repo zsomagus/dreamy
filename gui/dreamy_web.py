@@ -175,24 +175,31 @@ def save_dream_to_sheets(date_str, mood, keywords, symbols, description):
         tisztitott_szimbolumok = ", ".join(symbols) if isinstance(symbols, list) else str(symbols)
         
         # Az adatok, amiket be kell préselni a Google oszlopaiba
-      # A dátum felbontása évre, hónapra, napra a Google Form dátummezőjének megfelelően
-        # Feltételezzük, hogy a date_str formátuma "YYYY-MM-DD" vagy "YYYY.MM.DD"
+    # 1. LÉPÉS: A dátum string felbontása (Év, Hónap, Nap) a Google Form formátumához
+        # Elvárás: YYYY-MM-DD formátum
         tiszta_datum = str(date_str).replace('.', '-').strip()
-        ev, honap, nap = tiszta_datum.split('-')[0], tiszta_datum.split('-')[1], tiszta_datum.split('-')[2]
+        darabolt_datum = tiszta_datum.split('-')
+        
+        ev = darabolt_datum[0]
+        honap = darabolt_datum[1]
+        nap = darabolt_datum[2]
 
-        # HAJSZÁLPONTOS FORM ADATOK A FORRÁSKÓD ALAPJÁN
+        # 2. LÉPÉS: Az adatcsomag összeállítása a hivatalos entry azonosítókkal
         form_data = {
-            # A Google Dátum mező speciális al-azonosítói (év, hónap, nap)
+            # A 0-s indexű Dátum mező speciális bontása
             "entry.1780751080_year": str(ev).strip(),
             "entry.1780751080_month": str(honap).strip(),
             "entry.1780751080_day": str(nap).strip(),
             
-            # A többi normál szöveges mező
-            "entry.848467000": str(mood).strip(),
-            "entry.45759550": str(keywords).strip(),
-            "entry.45765567": str(tisztitott_szimbolumok).strip(),
-            "entry.45755088": str(description).strip()
+            # Az 1-es, 2-es, 3-as és 4-es indexű szöveges mezők
+            "entry.848467000": str(mood).strip(),                  # Hangulat (Index 1)
+            "entry.45759550": str(keywords).strip(),               # Kulcsszavak (Index 2)
+            "entry.45765567": str(tisztitott_szimbolumok).strip(), # Szimbólum (Index 3)
+            "entry.45755088": str(description).strip()              # Leírás (Index 4)
         }
+
+        # 3. LÉPÉS: Küldés POST kéréssel, kötelezően standard űrlapként (data=)
+        response = requests.post(form_url, data=form_data)
         
         # BÖNGÉSZŐ ÁLCA: Ezzel elhitetjük a Google-lel, hogy egy rendes Chrome böngésző küldi az adatot
         headers = {
