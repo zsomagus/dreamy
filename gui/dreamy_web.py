@@ -107,18 +107,61 @@ st.markdown("""
 # =========================================================
 # GOOGLE SHEETS FUNKCIÓK (TISZTA, JAVÍTOTT VERZIÓ)
 # =========================================================
-
 def load_dreams_from_sheets():
-    """Beolvassa az összes eddigi álmot a Google Táblázatból CSV-ként (hitelesítés nélkül)"""
+    """Beolvassa az online naplót és összefésüli a Google Táblázat oszlopneveit a kód változóival"""
     try:
         sheet_url = st.secrets["google_sheets"]["sheet_url"]
-        
-        # Levágjuk a link végéről a felesleges gid és szerkesztési sallangokat
         base_url = sheet_url.split("/edit")[0]
         csv_url = f"{base_url}/export?format=csv"
         
         df = pd.read_csv(csv_url)
-        return df.to_dict(orient="records")
+        
+        # Ha a táblázat üres, ne csináljon semmit
+        if df.empty:
+            return []
+            
+        # HAJSZÁLPONTOS OSZLOP-ÖSSZEFÉSÜLÉS:
+        # Megnézzük, mi a Google Táblázat valódi oszlopneve, és lefordítjuk a kód nyelvére
+        mapping = {}
+        if "Időbélyeg" in df.columns: mapping["Időbélyeg"] = "Időbélyeg"
+        if "Dátum" in df.columns: mapping["Dátum"] = "Dátum"
+        if "Hangulat" in df.columns: mapping["Hangulat"] = "Hangulat"
+        if "Kulcsszavak" in df.columns: mapping["Kulcsszavak"] = "Kulcsszavak"
+        if "Szimbólum" in df.columns: mapping["Szimbólum"] = "Szimbólum"
+        if "Leírás" in df.columns: mapping["Leírás"] = "Leírás"
+        
+        # Ha a kódod régebbi verziója kisbetűs angol kulcsokat várna a megjelenítésnél, 
+        # akkor ezt a biztonsági másolatot használjuk, hogy mindkét irányba működjön:
+        renamed_df = df.rename(columns={
+            "Időbélyeg": "timestamp",
+            "Dátum": "date",
+            "Hangulat": "mood",
+            "Kulcsszavak": "keywords",
+            "Szimbólum": "symbols",
+            "Leírás": "description"
+        })
+        
+        # Biztosítjuk, hogy az eredeti magyar nevek is megmaradjanak kulcsként, ha a táblázat-megjelenítő azt keresné
+        records = []
+        for _, row in df.iterrows():
+            record = {}
+            for col in df.columns:
+                # Ha a cella értéke üres vagy NaN, alakítsuk üres szöveggé a None helyett
+                val = row[col]
+                if pd.isna(val):
+                    val = ""
+                record[col] = val
+                
+                # Lefordítjuk kisbetűsre is a biztonság kedvéért
+                if col == "Időbélyeg": record["timestamp"] = val
+                if col == "Dátum": record["date"] = val
+                if col == "Hangulat": record["mood"] = val
+                if col == "Kulcsszavak": record["keywords"] = val
+                if col == "Szimbólum": record["symbols"] = val
+                if col == "Leírás": record["description"] = val
+            records.append(record)
+            
+        return records
     except Exception as e:
         st.error(f"Nem sikerült beolvasni az online naplót: {e}")
         return []
