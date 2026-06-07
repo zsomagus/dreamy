@@ -18,6 +18,8 @@ from modulok.load_alomszotar import load_alomszotar
 from modulok.music_prompt import build_music_prompt
 from modulok.score_renderer import export_score_to_pdf_and_png
 
+if "analysis_text" not in st.session_state:
+    st.session_state.analysis_text = ""
 # =========================================================
 # CONFIG
 # =========================================================
