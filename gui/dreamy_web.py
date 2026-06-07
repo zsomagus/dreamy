@@ -175,41 +175,37 @@ def save_dream_to_sheets(date_str, mood, keywords, symbols, description):
         tisztitott_szimbolumok = ", ".join(symbols) if isinstance(symbols, list) else str(symbols)
         
         # Az adatok, amiket be kell préselni a Google oszlopaiba
-# 1. LÉPÉS: Dátum formázása
-        tiszta_datum = str(date_str).replace('.', '-').strip()
-        darabolt_datum = tiszta_datum.split('-')
-        ev, honap, nap = darabolt_datum[0], darabolt_datum[1], darabolt_datum[2]
+# BIZTONSÁGOS DÁTUM KEZELÉS: Bármi is érkezik (szöveg vagy dátum objektum), 
+        # tiszta stringgé alakítjuk, és YYYY-MM-DD formátumra hozzuk
+        import datetime
+        if isinstance(date_str, (datetime.date, datetime.datetime)):
+            tiszta_datum = date_str.strftime("%Y-%m-%d")
+        else:
+            tiszta_datum = str(date_str).replace('.', '-').replace('/', '-').strip()
 
-        # 2. LÉPÉS: Teljes, hivatalos Google Form adatcsomag a rejtett rendszer-paraméterekkel
+        # Egyszerűsített, tiszta adatcsomag - a Google Form alapértelmezett szöveges POST-jához
         form_data = {
-            # Google Form kötelező rejtett ellenőrző mezői (ezek nélkül eldobja az adatokat!)
-            "fvv": "1",
-            "pageHistory": "0",
-            "draftResponse": "[]",
-            
-            # A Dátum mező struktúrája (Mindkét formátumban elküldjük, hogy biztosan bevigye)
-            "entry.1780751080_year": str(ev).strip(),
-            "entry.1780751080_month": str(honap).strip(),
-            "entry.1780751080_day": str(nap).strip(),
-            "entry.1780751080": tiszta_datum,
-            
-            # A te élő űrlapod pontos adatmezői
-            "entry.848467000": str(mood).strip(),                  # Hangulat
-            "entry.45759550": str(keywords).strip(),               # Kulcsszavak
-            "entry.45765567": str(tisztitott_szimbolumok).strip(), # Szimbólum
-            "entry.45755088": str(description).strip()              # Leírás
+            "entry.1780751080": tiszta_datum,                      # Dátum (Index 0)
+            "entry.848467000": str(mood).strip(),                  # Hangulat (Index 1)
+            "entry.45759550": str(keywords).strip(),               # Kulcsszavak (Index 2)
+            "entry.45765567": str(tisztitott_szimbolumok).strip(), # Szimbólum (Index 3)
+            "entry.45755088": str(description).strip()              # Leírás (Index 4)
         }
 
-        # 3. LÉPÉS: Küldés böngészőnek álcázott User-Agent-tel
-        # Ha a Google azt látja, hogy Python szkript küldi, néha letiltja a mezőket. 
-        # Ezzel a headerrel azt hiszi, egy sima Chrome böngészőből jön az adat.
+        # Küldés hagyományos form-adatként, böngészőnek álcázva
         headers = {
             "Content-Type": "application/x-www-form-urlencoded",
-            "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
+            "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/120.0.0.0"
         }
 
-        # 4. LÉPÉS: POST kérés elküldése
-        response = requests.post(form_url, data=form_data, headers=headers)
+        try:
+            response = requests.post(form_url, data=form_data, headers=headers)
+            if response.status_code == 200:
+                st.success("Az álom sikeresen elmentve az online naplóba!")
+            else:
+                st.error(f"A Google szervere hibát jelzett: {response.status_code}")
+        except Exception as e:
+            st.error(f"Hiba történt a küldés során: {e}")
         # BÖNGÉSZŐ ÁLCA: Ezzel elhitetjük a Google-lel, hogy egy rendes Chrome böngésző küldi az adatot
         headers = {
             "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
