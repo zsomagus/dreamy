@@ -122,25 +122,24 @@ def load_dreams_from_sheets():
         return []
 
 def save_dream_to_sheets(date_str, mood, keywords, symbols, description):
-    """Új sort küld a Google Táblázatba a feleséged ÚJ Google Formjának háttér-kitöltésével"""
+    """Új sort küld a Google Táblázatba tiszta szövegként kényszerítve"""
     try:
-        # A te legfrissebb, pontos Google Form beküldési végpontod
         form_url = "https://docs.google.com/forms/d/e/1FAIpQLSfnbGuNsXCFQNofdmwze7N6iJPWTrla1elXmvjugI7ZCEUv4g/formResponse"
         
-        # A te jelenlegi űrlapod 100%-ig pontos mezőkódjai
-        # Biztonságos szöveggé alakítás, hogy a Google Form biztosan elfogadja
+        # Mindent kényszerítünk, hogy sima szöveg (str) legyen, semmi lista vagy objektum
+        tisztitott_szimbolumok = ", ".join(symbols) if isinstance(symbols, list) else str(symbols)
+        
         form_data = {
             "entry.331295964": str(date_str),
             "entry.972304190": str(mood),
             "entry.1741541819": str(keywords),
-            "entry.2062635293": str(", ".join(symbols) if isinstance(symbols, list) else symbols),
+            "entry.2062635293": str(tisztitott_szimbolumok),
             "entry.1118120612": str(description)
         }
         
-        # Elküldjük a kérést a Google-nek
+        # Elküldjük a kérést
         response = requests.post(form_url, data=form_data)
         
-        # Ha a Google állapota 200 (OK), a mentés sikeres volt
         if response.status_code == 200:
             return True
         else:
