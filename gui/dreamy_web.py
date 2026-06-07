@@ -122,21 +122,21 @@ def load_dreams_from_sheets():
         return []
 
 def save_dream_to_sheets(date_str, mood, keywords, symbols, description):
-    """Új sort küld a Google Táblázatba a feleséged Google Formjának háttér-kitöltésével"""
+    """Új sort küld a Google Táblázatba a feleséged ÚJ Google Formjának háttér-kitöltésével"""
     try:
-        # A te egyedi Google Form beküldési végpontod (teljes, lezárt URL)
-        form_url = "https://docs.google.com/forms/d/1rbEFKgJBiAlg5p-Yto6cTLi6LzFmgfDkrhSR1OahQAU/formResponse"
+        # A te legfrissebb, pontos Google Form beküldési végpontod
+        form_url = "https://docs.google.com/forms/d/e/1FAIpQLSfnbGuNsXCFQNofdmwze7N6iJPWTrla1elXmvjugI7ZCEUv4g/formResponse"
         
-        # A te űrlapod pontos mezőkódjai
+        # A te jelenlegi űrlapod 100%-ig pontos mezőkódjai
         form_data = {
-            "entry.279603099": date_str,      # Dátum
-            "entry.1741753733": mood,         # Hangulat
-            "entry.1221762114": keywords,     # Kulcsszavak
-            "entry.1491754406": ", ".join(symbols) if isinstance(symbols, list) else str(symbols),  # Szimbólumok
-            "entry.226922336": description    # Leírás
+            "entry.331295964": date_str,      # Dátum
+            "entry.972304190": mood,          # Hangulat
+            "entry.1741541819": keywords,     # Kulcsszavak
+            "entry.2062635293": ", ".join(symbols) if isinstance(symbols, list) else str(symbols),  # Szimbólumok
+            "entry.1118120612": description    # Leírás
         }
         
-        # Elküldjük a kérést a Google-nek, mintha kitöltötték volna az űrlapot
+        # Elküldjük a kérést a Google-nek
         response = requests.post(form_url, data=form_data)
         
         # Ha a Google állapota 200 (OK), a mentés sikeres volt
@@ -149,7 +149,6 @@ def save_dream_to_sheets(date_str, mood, keywords, symbols, description):
     except Exception as e:
         st.error(f"Hiba a mentés során: {e}")
         return False
-
 # =========================================================
 # LOAD DREAM DICTIONARY
 # =========================================================
