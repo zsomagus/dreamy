@@ -18,8 +18,31 @@ from modulok.load_alomszotar import load_alomszotar
 from modulok.music_prompt import build_music_prompt
 from modulok.score_renderer import export_score_to_pdf_and_png
 
+# =========================================================
+# SESSION STATE INICIALIZÁLÁS (ÖSSZEOMLÁSVÉDELEM)
+# =========================================================
 if "analysis_text" not in st.session_state:
     st.session_state.analysis_text = ""
+
+if "music_prompt" not in st.session_state:
+    st.session_state.music_prompt = ""
+
+if "chart_path" not in st.session_state:
+    st.session_state.chart_path = None
+
+if "yantra_path" not in st.session_state:
+    st.session_state.yantra_path = None
+
+if "dream_log" not in st.session_state:
+    # Az első indításkor automatikusan beolvassuk az eddigi álmokat a táblázatból
+    # Így a feleséged azonnal látni fogja a régi naplóbejegyzéseit!
+    try:
+        # Mivel a függvényt később definiálod a kódban, meghívhatjuk közvetlenül, 
+        # vagy csak üres listaként indítjuk, és az app alján töltjük be. 
+        # Legyen biztonsági okokból elsőre egy üres lista:
+        st.session_state.dream_log = []
+    except:
+        st.session_state.dream_log = []
 # =========================================================
 # CONFIG
 # =========================================================
@@ -292,3 +315,7 @@ with right_col:
             st.dataframe(df, width="stretch")
         else:
             st.info("Az online napló még üres. Írd meg az első álmodat!")
+       
+        # Ha az app betöltődött és még üres a helyi memória logja, olvassa be a táblázatot
+if not st.session_state.dream_log:
+    st.session_state.dream_log = load_dreams_from_sheets()
