@@ -100,7 +100,7 @@ st.markdown("""
 # GOOGLE SHEETS FUNKCIÓK (TISZTA, JAVÍTOTT VERZIÓ)
 # =========================================================
 def load_dreams_from_sheets():
-    """Beolvassa az online naplót és szigorúan csak a Google Táblázat valódi oszlopait mutatja meg"""
+    """Beolvassa az online naplót és szigorúan csak a Google Táblázat hasznos oszlopait mutatja meg"""
     try:
         sheet_url = st.secrets["google_sheets"]["sheet_url"]
         base_url = sheet_url.split("/edit")[0]
@@ -111,38 +111,38 @@ def load_dreams_from_sheets():
         if df.empty:
             return []
             
-        # CSAK a valódi magyar oszlopokat tartjuk meg, semmi duplázás vagy angolra fordítás!
+        # Szigorúan csak azokat az oszlopokat tartjuk meg, amikben valóban van adat
+        # A Dátumot és a kisbetűs angol oszlopokat teljesen kihagyjuk!
         szurt_records = []
         for _, row in df.iterrows():
             timestamp = row.get("Időbélyeg", "")
-            datum = row.get("Dátum", "")
             mood = row.get("Hangulat", "")
             keywords = row.get("Kulcsszavak", "")
             symbols = row.get("Szimbólum", "")
             description = row.get("Leírás", "")
             
-            # NaN értékek (üres cellák) tisztítása szöveggé
+            # NaN értékek (üres cellák) tisztítása üres szöveggé
             timestamp = "" if pd.isna(timestamp) else str(timestamp)
-            datum = "" if pd.isna(datum) else str(datum)
             mood = "" if pd.isna(mood) else str(mood)
             keywords = "" if pd.isna(keywords) else str(keywords)
             symbols = "" if pd.isna(symbols) else str(symbols)
             description = "" if pd.isna(description) else str(description)
             
-            szurt_records.append({
-                "Időbélyeg": timestamp,
-                "Dátum": datum,
-                "Hangulat": mood,
-                "Kulcsszavak": keywords,
-                "Szimbólum": symbols,
-                "Leírás": description
-            })
+            # Csak akkor jelenítjük meg a sort, ha legalább a leírás vagy a hangulat meg van adva
+            # Így a korábbi hibás, teljesen üres tesztsorok automatikusan eltűnnek a képernyőről!
+            if description or mood or keywords:
+                szurt_records.append({
+                    "Időbélyeg": timestamp,
+                    "Hangulat": mood,
+                    "Kulcsszavak": keywords,
+                    "Szimbólum": symbols,
+                    "Leírás": description
+                })
             
         return szurt_records
     except Exception as e:
         st.error(f"Nem sikerült beolvasni az online naplót: {e}")
         return []
-
 def save_dream_to_sheets(date_str, mood, keywords, symbols, description):
     """Új sort küld a Google Táblázatba a dátummező szándékos elhagyásával"""
     try:
