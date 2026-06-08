@@ -1,16 +1,17 @@
 import os
 import sys
 import requests
-# Megkeressük a gui mappa szülőmappáját (a projekt gyökerét)
-BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-if BASE_DIR not in sys.path:
-    sys.path.insert(0, BASE_DIR)
-
 import json
 import pendulum
 import streamlit as st
 import pandas as pd
 import gspread
+import re
+
+# Megkeressük a gui mappa szülőmappáját (a projekt gyökerét)
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+if BASE_DIR not in sys.path:
+    sys.path.insert(0, BASE_DIR)
 
 from modulok import astro_core
 from modulok import draw
@@ -34,19 +35,11 @@ if "yantra_path" not in st.session_state:
     st.session_state.yantra_path = None
 
 if "dream_log" not in st.session_state:
-    # Az első indításkor automatikusan beolvassuk az eddigi álmokat a táblázatból
-    # Így a feleséged azonnal látni fogja a régi naplóbejegyzéseit!
-    try:
-        # Mivel a függvényt később definiálod a kódban, meghívhatjuk közvetlenül, 
-        # vagy csak üres listaként indítjuk, és az app alján töltjük be. 
-        # Legyen biztonsági okokból elsőre egy üres lista:
-        st.session_state.dream_log = []
-    except:
-        st.session_state.dream_log = []
+    st.session_state.dream_log = []
+
 # =========================================================
 # CONFIG
 # =========================================================
-
 st.set_page_config(
     page_title="Dreamy Widget",
     page_icon="🌙",
@@ -71,7 +64,6 @@ st.components.v1.html(pwa_html, height=0, width=0)
 # =========================================================
 # CUSTOM CSS
 # =========================================================
-
 st.markdown("""
 <style>
 .main {
@@ -116,45 +108,21 @@ def load_dreams_from_sheets():
         
         df = pd.read_csv(csv_url)
         
-        # Ha a táblázat üres, ne csináljon semmit
         if df.empty:
             return []
             
-        # HAJSZÁLPONTOS OSZLOP-ÖSSZEFÉSÜLÉS:
-        # Megnézzük, mi a Google Táblázat valódi oszlopneve, és lefordítjuk a kód nyelvére
-        mapping = {}
-        if "Időbélyeg" in df.columns: mapping["Időbélyeg"] = "Időbélyeg"
-      #  if "Dátum" in df.columns: mapping["Dátum"] = "Dátum"
-        if "Hangulat" in df.columns: mapping["Hangulat"] = "Hangulat"
-        if "Kulcsszavak" in df.columns: mapping["Kulcsszavak"] = "Kulcsszavak"
-        if "Szimbólum" in df.columns: mapping["Szimbólum"] = "Szimbólum"
-        if "Leírás" in df.columns: mapping["Leírás"] = "Leírás"
-        
-        # Ha a kódod régebbi verziója kisbetűs angol kulcsokat várna a megjelenítésnél, 
-        # akkor ezt a biztonsági másolatot használjuk, hogy mindkét irányba működjön:
-        renamed_df = df.rename(columns={
-            "Időbélyeg": "timestamp",
-     #       "Dátum": "date",
-            "Hangulat": "mood",
-            "Kulcsszavak": "keywords",
-            "Szimbólum": "symbols",
-            "Leírás": "description"
-        })
-        
-        # Biztosítjuk, hogy az eredeti magyar nevek is megmaradjanak kulcsként, ha a táblázat-megjelenítő azt keresné
+        # Biztosítjuk, hogy az eredeti magyar nevek is megmaradjanak kulcsként
         records = []
         for _, row in df.iterrows():
             record = {}
             for col in df.columns:
-                # Ha a cella értéke üres vagy NaN, alakítsuk üres szöveggé a None helyett
                 val = row[col]
                 if pd.isna(val):
                     val = ""
                 record[col] = val
                 
-                # Lefordítjuk kisbetűsre is a biztonság kedvéért
+                # Lefordítjuk kisbetűsre is a biztonság kedvéért a felülethez
                 if col == "Időbélyeg": record["timestamp"] = val
-                if col == "Dátum": record["date"] = val
                 if col == "Hangulat": record["mood"] = val
                 if col == "Kulcsszavak": record["keywords"] = val
                 if col == "Szimbólum": record["symbols"] = val
@@ -167,14 +135,14 @@ def load_dreams_from_sheets():
         return []
 
 def save_dream_to_sheets(date_str, mood, keywords, symbols, description):
-    """Új sort küld a Google Táblázatba böngésző álcázással (Headers)"""
+    """Új sort küld a Google Táblázatba a dátummező szándékos elhagyásával"""
     try:
         form_url = "https://docs.google.com/forms/d/e/1FAIpQLSfnbGuNsXCFQNofdmwze7N6iJPWTrla1elXmvjugI7ZCEUv4g/formResponse"
         
         # Tisztítjuk a szimbólumokat
         tisztitott_szimbolumok = ", ".join(symbols) if isinstance(symbols, list) else str(symbols)
         
-# Teljesen kihagyjuk a dátumot, mert az Időbélyeg automatikusan létrejön!
+        # Teljesen kihagyjuk a dátumot, mert az Időbélyeg automatikusan létrejön a Google oldalon!
         form_data = {
             "entry.848467000": str(mood).strip(),                  # Hangulat
             "entry.45759550": str(keywords).strip(),               # Kulcsszavak
@@ -182,33 +150,32 @@ def save_dream_to_sheets(date_str, mood, keywords, symbols, description):
             "entry.45755088": str(description).strip()              # Leírás
         }
 
-        # Küldés mindenféle extra zavaró fejléc nélkül
-        try:
-            response = requests.post(form_url, data=form_data)
-            if response.status_code == 200:
-                st.success("Az álom sikeresen elmentve az online naplóba!")
-            else:
-                st.error(f"Hiba a Google szerverén: {response.status_code}")
-        except Exception as e:
-                st.error(f"Hiba történt a küldés során: {e}")
-# =========================================================
-# LOAD DREAM DICTIONARY
-# =========================================================
+        response = requests.post(form_url, data=form_data)
+        if response.status_code == 200:
+            return True
+        else:
+            st.error(f"Hiba a Google szerverén: {response.status_code}")
+            return False
+    except Exception as e:
+        st.error(f"Hiba történt a küldés során: {e}")
+        return False
 
-    @st.cache_data
+# =========================================================
+# LOAD DREAM DICTIONARY (BEHÚZÁSOK JAVÍTVA!)
+# =========================================================
+@st.cache_data
 def cached_szotar_betoltes(path):
     return load_alomszotar(path)
 
-    ALOMSZOTAR_PATH = os.path.join(BASE_DIR, "alomszotar.json")
-    try:
-        SZOTAR = cached_szotar_betoltes(ALOMSZOTAR_PATH)
-    except:
-        SZOTAR = {"alomszotar": []}
+ALOMSZOTAR_PATH = os.path.join(BASE_DIR, "alomszotar.json")
+try:
+    SZOTAR = cached_szotar_betoltes(ALOMSZOTAR_PATH)
+except:
+    SZOTAR = {"alomszotar": []}
 
 # =========================================================
 # HELPERS
 # =========================================================
-
 def levag_ragokat(szo: str):
     ragok = ["ban", "ben", "val", "vel", "hoz", "hez", "höz", "nak", "nek", "ból", "ből", "ről", "tól", "től"]
     for rag in ragok:
@@ -221,7 +188,7 @@ def analyze_dream(text, keywords):
     szimbolumok = []
     szavak = [s.strip().lower() for s in text.split() if len(s.strip()) > 2]
     szavak_tovei = [levag_ragokat(s) for s in szavak]
-    egyedi_kulcsszavak = [k.strip().lower() for k in keywords.split(",") if k.strip()]i
+    egyedi_kulcsszavak = [k.strip().lower() for k in keywords.split(",") if k.strip()]
     minden = list(set(szavak_tovei + egyedi_kulcsszavak))
 
     for szo in minden:
@@ -253,34 +220,29 @@ def generate_prashna_chart(lat, lon):
     )
     raw_tithi = str(res.get("tithi", "13")).lower()
     
-    # Kikeressük az összes számjegyet a szövegből (pl. "tithi 14" -> 14, vagy "sukla 3" -> 3)
-    import re
     szamok = re.findall(r'\d+', raw_tithi)
-    
     if szamok:
         tithi_szam = int(szamok[0])
     else:
-        tithi_szam = 0  # Biztonsági tartalék, ha a szövegben egyáltalán nincs szám
+        tithi_szam = 0
         
     yantra = astro_core.find_yantra_by_tithi(tithi_szam)
     return png_res, yantra
+
 # =========================================================
 # HEADER
 # =========================================================
-
 st.title("🌙 Dreamy Widget")
 st.caption("Automata Felhős Álomnapló • AI Prompt • Prashna • Yantra")
 
 # =========================================================
 # LAYOUT
 # =========================================================
-
 left_col, right_col = st.columns([1, 1])
 
 # =========================================================
 # LEFT COLUMN
 # =========================================================
-
 with left_col:
     st.subheader("📝 Új álom")
     dream_text = st.text_area("Mit álmodtál?", height=180)
@@ -308,7 +270,7 @@ with left_col:
             with st.spinner("Álom mentése a felhőbe..."):
                 if save_dream_to_sheets(date_str, mood, keywords, szimbolumok, dream_text):
                     st.success("🎯 Az álom sikeresen elmentve az online naplóba!")
-                    # Frissítjük a helyi listát is, hogy azonnal látszódjon a táblázatban
+                    # Frissítjük a helyi listát is az azonnali frissüléshez
                     st.session_state.dream_log = load_dreams_from_sheets()
 
             try:
@@ -327,14 +289,13 @@ with left_col:
 # =========================================================
 # RIGHT COLUMN
 # =========================================================
-
 with right_col:
     tabs = st.tabs(["📊 Prashna", "🔮 Yantra", "📜 Online Napló"])
 
     # PRASHNA
     with tabs[0]:
         if st.session_state.chart_path and os.path.exists(st.session_state.chart_path):
-            st.image(st.session_state.chart_path, width="stretch")
+            st.image(st.session_state.chart_path, use_container_width=True)
         else:
             st.info("Még nincs generált horoszkóp.")
 
@@ -351,12 +312,11 @@ with right_col:
         
         if st.session_state.dream_log:
             df = pd.DataFrame(st.session_state.dream_log)
-            # Megfordítjuk a sorrendet, hogy a legfrissebb álom legyen legfelül
-            df = df.iloc[::-1]
-            st.dataframe(df, width="stretch")
+            df = df.iloc[::-1]  # Legfrissebb felülre
+            st.dataframe(df, use_container_width=True)
         else:
             st.info("Az online napló még üres. Írd meg az első álmodat!")
        
-        # Ha az app betöltődött és még üres a helyi memória logja, olvassa be a táblázatot
+# Kezdeti beolvasás az alkalmazás indításakor
 if not st.session_state.dream_log:
     st.session_state.dream_log = load_dreams_from_sheets()
