@@ -151,12 +151,12 @@ def save_dream_to_sheets(date_str, mood, keywords, symbols, description):
         # Tisztítjuk a szimbólumokat
         tisztitott_szimbolumok = ", ".join(symbols) if isinstance(symbols, list) else str(symbols)
         
-        # Teljesen kihagyjuk a dátumot, mert az Időbélyeg automatikusan létrejön a Google oldalon!
+        # Teljesen kihagyjuk a dátumot, és a VALÓDI Google Form entry kódokat használjuk!
         form_data = {
-            "entry.848467000": str(mood).strip(),                  # Hangulat
-            "entry.45759550": str(keywords).strip(),               # Kulcsszavak
-            "entry.45765567": str(tisztitott_szimbolumok).strip(), # Szimbólum
-            "entry.45755088": str(description).strip()              # Leírás
+            "entry.245253427": str(mood).strip(),                  # Hangulat
+            "entry.60222006": str(keywords).strip(),               # Kulcsszavak
+            "entry.718624254": str(tisztitott_szimbolumok).strip(), # Szimbólum
+            "entry.1596218239": str(description).strip()            # Leírás
         }
 
         response = requests.post(form_url, data=form_data)
