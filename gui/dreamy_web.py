@@ -1,11 +1,12 @@
+# =========================================================
+# STREAMLIT ÁLOMNAPLÓ WIDGET - OFFLINE EXCEL/CSV VERZIÓ
+# =========================================================
 import os
 import sys
-import requests
 import json
 import pendulum
 import streamlit as st
 import pandas as pd
-import gspread
 import re
 
 # Megkeressük a gui mappa szülőmappáját (a projekt gyökerét)
@@ -18,6 +19,13 @@ from modulok import draw
 from modulok.load_alomszotar import load_alomszotar
 from modulok.music_prompt import build_music_prompt
 from modulok.score_renderer import export_score_to_pdf_and_png
+
+# =========================================================
+# HELYI EXCEL/CSV STRUKTÚRA BEÁLLÍTÁSA (DOKUMENTUMOK MAPPA)
+# =========================================================
+# Dinamikusan megkeresi a te Windows felhasználói Dokumentumok mappádat
+DOCUMENTS_DIR = os.path.join(os.path.expanduser("~"), "Documents")
+LOCAL_DB_PATH = os.path.join(DOCUMENTS_DIR, "dream_log.csv")
 
 # =========================================================
 # SESSION STATE INICIALIZÁLÁS (ÖSSZEOMLÁSVÉDELEM)
@@ -59,7 +67,7 @@ pwa_html = """
   }
 </script>
 """
-st.components.v1.html(pwa_html, height=0, width=0)
+st.html(pwa_html)
 
 # =========================================================
 # CUSTOM CSS
@@ -97,80 +105,51 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 # =========================================================
-# GOOGLE SHEETS FUNKCIÓK (TISZTA, JAVÍTOTT VERZIÓ)
+# HELYI FÁJL FUNKCIÓK (A GOOGLE HELYETT)
 # =========================================================
-def load_dreams_from_sheets():
-    """Beolvassa az online naplót és szigorúan csak a Google Táblázat valódi oszlopait mutatja meg"""
+def load_dreams_from_local():
+    """Beolvassa a helyi Dokumentumok mappából az álomnaplót"""
     try:
-        sheet_url = st.secrets["google_sheets"]["sheet_url"]
-        base_url = sheet_url.split("/edit")[0]
-        csv_url = f"{base_url}/export?format=csv"
-        
-        df = pd.read_csv(csv_url)
-        
-        if df.empty:
+        if not os.path.exists(LOCAL_DB_PATH):
             return []
-            
-        # CSAK a valódi magyar oszlopokat tartjuk meg, semmi duplázás vagy angolra fordítás!
-        szurt_records = []
-        for _, row in df.iterrows():
-            timestamp = row.get("Időbélyeg", "")
-         #   datum = row.get("Dátum", "")
-            mood = row.get("Hangulat", "")
-            keywords = row.get("Kulcsszavak", "")
-            symbols = row.get("Szimbólum", "")
-            description = row.get("Leírás", "")
-            
-            # NaN értékek (üres cellák) tisztítása szöveggé
-            timestamp = "" if pd.isna(timestamp) else str(timestamp)
-          #  datum = "" if pd.isna(datum) else str(datum)
-            mood = "" if pd.isna(mood) else str(mood)
-            keywords = "" if pd.isna(keywords) else str(keywords)
-            symbols = "" if pd.isna(symbols) else str(symbols)
-            description = "" if pd.isna(description) else str(description)
-            
-            szurt_records.append({
-                "Időbélyeg": timestamp,
-        #        "Dátum": datum,
-                "Hangulat": mood,
-                "Kulcsszavak": keywords,
-                "Szimbólum": symbols,
-                "Leírás": description
-            })
-            
-        return szurt_records
+        
+        df = pd.read_csv(LOCAL_DB_PATH, encoding="utf-8")
+        # NaN értékek és üres sorok kigyomlálása, hogy szép legyen a felület
+        df = df.dropna(how="all")
+        df = df.fillna("")
+        
+        return df.to_dict(orient="records")
     except Exception as e:
-        st.error(f"Nem sikerült beolvasni az online naplót: {e}")
+        st.error(f"Nem sikerült beolvasni a helyi naplót: {e}")
         return []
 
-def save_dream_to_sheets(date_str, mood, keywords, symbols, description):
-    """Új sort küld a Google Táblázatba a dátummező szándékos elhagyásával"""
+def save_dream_to_local(date_str, mood, keywords, symbols, description):
+    """Elmenti az új álmot a gép Dokumentumok mappájában lévő táblázatba"""
     try:
-        form_url = "https://docs.google.com/forms/d/e/1FAIpQLSfnbGuNsXCFQNofdmwze7N6iJPWTrla1elXmvjugI7ZCEUv4g/formResponse"
-        
-        # Tisztítjuk a szimbólumokat
         tisztitott_szimbolumok = ", ".join(symbols) if isinstance(symbols, list) else str(symbols)
         
-        # Teljesen kihagyjuk a dátumot, és a VALÓDI Google Form entry kódokat használjuk!
-        form_data = {
-            "entry.245253427": str(mood).strip(),                  # Hangulat
-            "entry.60222006": str(keywords).strip(),               # Kulcsszavak
-            "entry.718624254": str(tisztitott_szimbolumok).strip(), # Szimbólum
-            "entry.1596218239": str(description).strip()            # Leírás
+        új_sor = {
+            "Időbélyeg": date_str,
+            "Hangulat": str(mood).strip(),
+            "Kulcsszavak": str(keywords).strip(),
+            "Szimbólum": str(tisztitott_szimbolumok).strip(),
+            "Leírás": str(description).strip()
         }
-
-        response = requests.post(form_url, data=form_data)
-        if response.status_code == 200:
-            return True
+        
+        if os.path.exists(LOCAL_DB_PATH):
+            df = pd.read_csv(LOCAL_DB_PATH, encoding="utf-8")
         else:
-            st.error(f"Hiba a Google szerverén: {response.status_code}")
-            return False
+            df = pd.DataFrame(columns=["Időbélyeg", "Hangulat", "Kulcsszavak", "Szimbólum", "Leírás"])
+            
+        df = pd.concat([df, pd.DataFrame([új_sor])], ignore_index=True)
+        df.to_csv(LOCAL_DB_PATH, index=False, encoding="utf-8")
+        return True
     except Exception as e:
-        st.error(f"Hiba történt a küldés során: {e}")
+        st.error(f"Hiba történt a helyi mentés során: {e}")
         return False
 
 # =========================================================
-# LOAD DREAM DICTIONARY (BEHÚZÁSOK JAVÍTVA!)
+# LOAD DREAM DICTIONARY
 # =========================================================
 @st.cache_data
 def cached_szotar_betoltes(path):
@@ -242,7 +221,7 @@ def generate_prashna_chart(lat, lon):
 # HEADER
 # =========================================================
 st.title("🌙 Dreamy Widget")
-st.caption("Automata Felhős Álomnapló • AI Prompt • Prashna • Yantra")
+st.caption(f"Helyi Biztonságos Álomnapló • AI Prompt • Prashna • Fájl: {LOCAL_DB_PATH}")
 
 # =========================================================
 # LAYOUT
@@ -275,12 +254,11 @@ with left_col:
             now = pendulum.now("Europe/Budapest")
             date_str = now.format("YYYY-MM-DD HH:mm")
 
-            # Mentés a Google Felhőbe
-            with st.spinner("Álom mentése a felhőbe..."):
-                if save_dream_to_sheets(date_str, mood, keywords, szimbolumok, dream_text):
-                    st.success("🎯 Az álom sikeresen elmentve az online naplóba!")
-                    # Frissítjük a helyi listát is az azonnali frissüléshez
-                    st.session_state.dream_log = load_dreams_from_sheets()
+            # MENTÉS A GÉPRE (Excel kompatibilis formátumban)
+            with st.spinner("Álom mentése a gép Dokumentumok mappájába..."):
+                if save_dream_to_local(date_str, mood, keywords, szimbolumok, dream_text):
+                    st.success("🎯 Az álom sikeresen elmentve a Dokumentumok közé!")
+                    st.session_state.dream_log = load_dreams_from_local()
 
             try:
                 chart_path, yantra_path = generate_prashna_chart(lat, lon)
@@ -299,12 +277,12 @@ with left_col:
 # RIGHT COLUMN
 # =========================================================
 with right_col:
-    tabs = st.tabs(["📊 Prashna", "🔮 Yantra", "📜 Online Napló"])
+    tabs = st.tabs(["📊 Prashna", "🔮 Yantra", "📜 Helyi Napló"])
 
     # PRASHNA
     with tabs[0]:
         if st.session_state.chart_path and os.path.exists(st.session_state.chart_path):
-            st.image(st.session_state.chart_path, use_container_width=True)
+            st.image(st.session_state.chart_path, width='stretch')
         else:
             st.info("Még nincs generált horoszkóp.")
 
@@ -315,17 +293,17 @@ with right_col:
         else:
             st.info("Még nincs yantra.")
 
-    # ONLINE NAPLÓ MEGJELENÍTÉSE
+    # HELYI NAPLÓ MEGJELENÍTÉSE
     with tabs[2]:
-        st.subheader("📜 Mentett álmok a Google Táblázatból")
+        st.subheader("📜 Dokumentumok mappába elmentett álmok")
         
         if st.session_state.dream_log:
             df = pd.DataFrame(st.session_state.dream_log)
             df = df.iloc[::-1]  # Legfrissebb felülre
-            st.dataframe(df, use_container_width=True)
+            st.dataframe(df, width='stretch')
         else:
-            st.info("Az online napló még üres. Írd meg az első álmodat!")
+            st.info("A helyi napló még üres. Írd meg az első álmodat!")
        
 # Kezdeti beolvasás az alkalmazás indításakor
 if not st.session_state.dream_log:
-    st.session_state.dream_log = load_dreams_from_sheets()
+    st.session_state.dream_log = load_dreams_from_local()

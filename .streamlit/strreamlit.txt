@@ -1,0 +1,11 @@
+# Példa egy secrets.toml tartalomra (ide a te egyedi kulcsaid kellenek!)
+[connections.gsheets]
+spreadsheet = "https://docs.google.com/spreadsheets/d/1YmvyIL5a7QhhX5iyrieIyqjvG4jEhUYCPbx4RVnv3xs/edit?usp=sharing"
+type = "service_account"
+project_id = "..."
+private_key_id = "..."
+private_key = "-----BEGIN PRIVATE KEY-----\n..."
+client_email = "..."
+
+
+
